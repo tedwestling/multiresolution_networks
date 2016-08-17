@@ -103,15 +103,30 @@ all_chains <- list(beta=rbind(chain1$beta, chain2$beta, chain3$beta, chain4$beta
                  gamma=rbind(chain1$gamma, chain2$gamma, chain3$gamma, chain4$gamma))
 
 set.seed(303854)
+# Use asortative spectral clustering estimate as fixed membership vector to rotate towards
 spec <- spectral_cluster(network, Krange = Khat, assortative = TRUE, plot=FALSE, degree_correct = FALSE)
 plot_blocked_matrix(network, spec[[1]]$clusters)
-mcmc_samples <- postprocess_MCMC(all_chains, network, true_gamma = spec[[1]]$clusters)
+
+mcmc_samples <- postprocess_MCMC(all_chains, network, fixed_memb = spec[[1]]$clusters)
 
 save(mcmc_samples, file='data/results/village_59_mcmc_samples.Rdata')
 load('data/results/village_59_mcmc_samples.Rdata')
 
 set.seed(47676728)
-gamma_mode <- as.numeric(apply(mcmc_samples$gamma, 2, function(memb) names(table(memb))[which.max(table(memb))]))
+
+# CODE FOR COMPUTING JOINT POSTERIOR MODE:
+gamma_vecs <- apply(mcmc_samples$gamma,1,paste0, collapse='.')
+gamma_tab <- table(gamma_vecs)
+head(sort(gamma_tab))
+# If the maximum of gamma_tab is 1 then no membership appeared more than once and the marginal mode should be used instead
+gamma_mode <- names(gamma_tab)[which.max(gamma_tab)]
+joint_mode <- as.numeric(strsplit(gamma_mode, ".", fixed=TRUE)[[1]])
+
+# CODE FOR COMPUTING MARGINAL POSTERIOR MODES:
+marg_mode <- as.numeric(apply(mcmc_samples$gamma, 2, function(memb) names(table(memb))[which.max(table(memb))]))
+
+# CHOOSE ONE FOR DISPLAYING POSITIONS
+gamma_mode <- marg_mode
 
 # Plot blocked adjacency matrix - Figure 1
 png('plots/blocked_adjacency.png', width=2, height=2, units='in', res=300)
