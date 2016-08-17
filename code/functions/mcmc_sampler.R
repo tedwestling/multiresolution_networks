@@ -15,7 +15,7 @@
 # Driver function for the sampling algorithm
 #######################################
 
-block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon=.01, joint_step=FALSE, delta=.1, rZ=1, Atheta=matrix(c(2,1,1,1), nrow=2), alpha0=.1, a0=NULL, b0=NULL, m0=c(0,0), s0=0.01, psi0=matrix(c(5.1,0,0,5.1), nrow=2), nu0=5.1, verbose=TRUE, memb_start=NULL, plot_init=FALSE, likelihood=FALSE, true_gamma=NULL, postprocess=TRUE, sample_membs=TRUE, record_acc_probs=FALSE, debug_output=FALSE) {
+block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, rZ=1, Atheta=matrix(c(2,1,1,1), nrow=2), alpha0=.1, a0=NULL, b0=NULL, m0=c(0,0), s0=0.01, psi0=matrix(c(5.1,0,0,5.1), nrow=2), nu0=5.1, verbose=TRUE, memb_start=NULL, plot_init=FALSE, likelihood=FALSE, true_gamma=NULL, postprocess=TRUE, sample_membs=TRUE, record_acc_probs=FALSE, debug_output=FALSE, perturb_init=TRUE) {
   require(gtools)
   require(MASS)
   require(MCMCpack)
@@ -33,8 +33,13 @@ block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon
   # if no starting values are provided, initialize using the three-stage procedure
   # par_t will contain the latest parameter values, which will be used for proposal distributions
   if(verbose) cat("Initalizing...")
-  if(is.null(K)) par_t <- three_stage_est(Y, D, plot_folder = NULL)
-  else par_t <- three_stage_est(Y, D, K=K, plot_folder = NULL)
+  par_t <- three_stage_est(Y, D, K=K, plot_folder = NULL)
+  if(perturb_init) {
+    perturb_nodes <- sample(1:N, ceiling(N/10), replace=FALSE)
+    for(node in perturb_nodes) {
+      par_t$gamma[node] <- sample((1:par_t$K)[-par_t$gamma[node]], 1)
+    }
+  }
   par_t$Y <- Y
   par_t$Y[is.na(par_t$Y)] <- par_t$pred[is.na(par_t$Y)]
   par_t$block_n <- c(table(par_t$gamma))
@@ -55,21 +60,8 @@ block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon
   }
   cD <- 2 * gamma((D + 1)/2) / gamma(D/2)
   expit <- function(x) 1/(1 + exp(-x))
-  # for(k in 1:K) {
-  #   par_t$theta[k,2] <- log(sd(c(par_t$Z[par_t$gamma == k,])))
-  #   par_t$theta[k,1] <- logit(sum(Y[par_t$gamma == 1, par_t$gamma == 1]) / (par_t$block_n[k]) * (par_t$block_n[k] - 1)) + cD * exp(par_t$theta[k,2])
-  # }
-  #   for(k in 2:K) {
-  #     for(l in 1:(k-1)) {
-  #       minval <- min(exp_value(par_t$theta[k,1], exp(par_t$theta[k,2])), exp_value(par_t$theta[l,1], exp(par_t$theta[l,2])))
-  #       if(par_t$B[k,l] >= minval) {
-  #         print(paste("Initialized parameters for block ", k,", ", l, " do not satisfy prior constraints; forcing "))
-  #         par_t$B[k, l] <- par_t$B[l, k] <- minval/2
-  #       }
-  #     }
-  #   }
   
-  minval <- par_t$mu[1] - cD * exp(par_t$mu[2])#exp_value(par_t$mu[1], exp(par_t$mu[2]))
+  minval <- par_t$mu[1] - cD * exp(par_t$mu[2])
   if(digamma(a0) - digamma(b0) > minval) par_t$mu[1] <- 1 + digamma(a0) - digamma(b0) + cD * exp(par_t$mu[2])
     
   # Create list to store our samples in
@@ -85,8 +77,7 @@ block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon
   if(likelihood) loglik <- matrix(NA, nrow=n_samples, ncol=9)
   
   if(record_acc_probs) {
-    if(!joint_step) joint_acc_probs <- matrix(NA, nrow=n_samples, ncol=N)
-    else joint_acc_probs <-  rep(NA, nrow=n_samples)
+    joint_acc_probs <- matrix(NA, nrow=n_samples, ncol=N)
     pos_acc_probs <- matrix(NA, nrow=n_samples, ncol=N)
     theta_acc_probs <- matrix(NA, nrow=n_samples, ncol=K)
   }
@@ -111,42 +102,23 @@ block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon
     
     if(t %% v == 0) {
       #if(verbose) cat("  Performing joint proposal.\n")
-      if(joint_step) {
-        if(debug_output) cat("Joint proposal\n")
-        joint_prop <- joint_proposal_all(epsilon, delta, rZ, par_t)
-        if(keeping_sample & record_acc_probs) joint_acc_probs[sample_num] <- joint_prop$prob
+      for(i in 1:N) {
+        joint_prop <- joint_proposal(i, epsilon, rZ, par_t)
+        if(keeping_sample & record_acc_probs) joint_acc_probs[sample_num, i] <- joint_prop$prob
+        #if(verbose) cat("    Proposal acceptance probability", joint_prop$prob, "\n")
         if(runif(1)  < joint_prop$prob) {
-          for(i in 1:N) {
-            prev_block <- par_t$gamma[i]
-            new_block <- joint_prop$gamma[i]
-            par_t$gamma[i] <- new_block
-            par_t$Z[i,] <- joint_prop$Z[i,]
-          }    
-          par_t$block_n <- joint_prop$block_n
-          par_t$s <- joint_prop$s
-          par_t$dists <- joint_prop$dists
-        }
-      }
-      # joint membership-latent space proposal
-      else {
-        for(i in 1:N) {
-          joint_prop <- joint_proposal(i, epsilon, delta, rZ, par_t)
-          if(keeping_sample & record_acc_probs) joint_acc_probs[sample_num, i] <- joint_prop$prob
-          #if(verbose) cat("    Proposal acceptance probability", joint_prop$prob, "\n")
-          if(runif(1)  < joint_prop$prob) {
-            prev_block <- par_t$gamma[i]
-            new_block <- joint_prop$gamma_i
-            par_t$gamma[i] <- new_block
-            par_t$Z[i,] <- joint_prop$Zi
-            par_t$dists[[new_block]] <- as.matrix(dist(par_t$Z[par_t$gamma == new_block,]))
-            if(prev_block != new_block) {
-              par_t$dists[[prev_block]] <- as.matrix(dist(par_t$Z[par_t$gamma == prev_block,]))
-              par_t$block_n[prev_block] <- par_t$block_n[prev_block] - 1
-              par_t$block_n[new_block] <- par_t$block_n[new_block] + 1
-              for(j in 1:K) {
-                par_t$s[prev_block,j] <- par_t$s[j,prev_block] <- sum(par_t$Y[par_t$gamma == prev_block, par_t$gamma == j])
-                par_t$s[new_block, j] <- par_t$s[j,new_block] <- sum(par_t$Y[par_t$gamma == new_block, par_t$gamma == j])
-              }
+          prev_block <- par_t$gamma[i]
+          new_block <- joint_prop$gamma_i
+          par_t$gamma[i] <- new_block
+          par_t$Z[i,] <- joint_prop$Zi
+          par_t$dists[[new_block]] <- as.matrix(dist(par_t$Z[par_t$gamma == new_block,]))
+          if(prev_block != new_block) {
+            par_t$dists[[prev_block]] <- as.matrix(dist(par_t$Z[par_t$gamma == prev_block,]))
+            par_t$block_n[prev_block] <- par_t$block_n[prev_block] - 1
+            par_t$block_n[new_block] <- par_t$block_n[new_block] + 1
+            for(j in 1:K) {
+              par_t$s[prev_block,j] <- par_t$s[j,prev_block] <- sum(par_t$Y[par_t$gamma == prev_block, par_t$gamma == j])
+              par_t$s[new_block, j] <- par_t$s[j,new_block] <- sum(par_t$Y[par_t$gamma == new_block, par_t$gamma == j])
             }
           }
         }
@@ -231,135 +203,6 @@ block_latent_MCMC <- function(Y, D, K=NULL, burn_in, n_samples, thin, v, epsilon
 }
 
 
-
-block_latent_MCMC_nomemb <- function(Y, D, K=NULL, burn_in, n_samples, thin, rZ=1, Atheta=matrix(c(2,1,1,1), nrow=2), alpha0=.1, a0=NULL, b0=NULL, m0=c(0,0), s0=0.01, psi0=matrix(c(5.1,0,0,5.1), nrow=2), nu0=5.1, verbose=TRUE, memb_start=NULL, likelihood=FALSE, true_gamma=NULL, postprocess=TRUE) {
-  require(gtools)
-  require(MASS)
-  require(MCMCpack)
-  N <- nrow(Y)
-  miss_inds <- which(is.na(Y), arr.ind = TRUE)
-  miss_inds <- miss_inds[miss_inds[,1] < miss_inds[,2],]
-  
-  #impute missing values using observed node-wise edge frequencies for initialization
-  # obs_prob <- colMeans(Y, na.rm=TRUE)
-  # exp_prob <- outer(obs_prob, obs_prob)
-  # Yimp <- Y
-  # if(sum(is.na(Y)) > 0) Yimp[is.na(Yimp)] <- exp_prob[is.na(Yimp)]
-  
-  
-  # if no starting values are provided, initialize using the three-stage procedure
-  # par_t will contain the latest parameter values, which will be used for proposal distributions
-  if(verbose) cat("Initalizing...")
-  if(is.null(K)) par_t <- three_stage_est(Y, D, plot_folder = NULL)
-  else par_t <- three_stage_est(Y, D, K=K, plot_folder = NULL)
-  par_t$Y <- Y
-  if(any(is.na(Y))) par_t$Y[miss_inds] <- par_t$pred[miss_inds]
-  par_t$block_n <- c(table(par_t$gamma))
-  par_t$s <- matrix(NA, nrow=par_t$K, ncol=par_t$K)
-  for(i in 1:par_t$K) for(j in 1:i) par_t$s[i,j] <- par_t$s[j,i] <- sum(par_t$Y[par_t$gamma == i, par_t$gamma == j])
-  par_t$pi <- par_t$block_n/N
-  K <- par_t$K
-  if(is.null(a0)) a0 <- 1
-  if(is.null(b0)) b0 <- N * (K - 1) / K
-  
-  par_t$N <- N
-  par_t$dists <- lapply(1:K, function(k) as.matrix(dist(par_t$Z[which(par_t$gamma == k),])))
- # if(plot_init) plot_blocked_matrix(Y, par_t$gamma)
-  if(verbose) {
-    cat("Done initializing. K =", K, "\n")
-    for(k in 1:K) cat("theta", k, "=", par_t$theta[k,], "\n")
-  }
-  
-  # Create list to store our samples in
-  if(nrow(miss_inds) > 0) Ymiss <- matrix(NA, nrow=burn_in + n_samples, ncol=nrow(miss_inds))
-  beta <- matrix(NA, nrow=burn_in + n_samples, ncol=K)
-  sigma <- matrix(NA, nrow=burn_in + n_samples, ncol=K)
-  # gamma <- matrix(NA, nrow=burn_in + n_samples, ncol=N)
-  #pi <- matrix(NA, nrow=burn_in + n_samples, ncol=K)
-  mu <- matrix(NA, nrow=burn_in + n_samples, ncol=2)
-  #B <- array(dim=c(burn_in + n_samples,K,K))
-  Z <- pre_Z <- array(dim=c(burn_in + n_samples,N,D))
-  Sigma <- array(dim=c(burn_in + n_samples,2,2))
-  loglik <- matrix(NA, nrow=burn_in + n_samples, ncol=9)
-  #sampled_gamma <- rep(NA, burn_in + n_samples)
-  
-  #if(!joint_step) joint_acc_probs <- matrix(NA, nrow=burn_in + n_samples, ncol=N)
-  #else joint_acc_probs <-  rep(NA, nrow=burn_in + n_samples)
-  pos_acc_probs <- matrix(NA, nrow=burn_in + n_samples, ncol=N)
-  theta_acc_probs <- matrix(NA, nrow=burn_in + n_samples, ncol=K)
-  if(verbose) cat("Starting sampling... \n")
-  start_time <- Sys.time()
-  for(t in 1:(burn_in + n_samples)) {
-    if(verbose & (t %% 100 == 0)) {  
-      time_left <- (c(difftime(Sys.time(), start_time, units="secs")) / t) * (burn_in + n_samples - t)
-      cat("Iteration", t, "of", (burn_in + n_samples), ",", round(c(time_left)/60, 2), "minutes left\n")
-    }
-    # Sample missing values from current parameter estimates first because we need Y with no missing values for the other updates
-    if(nrow(miss_inds) > 0) {
-      par_t$Y[miss_inds] <- par_t$Y[miss_inds[,c(2,1)]] <- Ymiss[t,] <- missing_edge_update(par_t, miss_inds)
-      for(i in 1:par_t$K) for(j in 1:i) par_t$s[i,j] <- par_t$s[j,i] <- sum(par_t$Y[par_t$gamma == i, par_t$gamma == j])
-    }
-    
-    # MH position steps
-    #if(verbose) cat("  Proposing positions.\n")
-    for(i in 1:N) {
-      pos_prop <- position_proposal(i, rZ, par_t)
-      pos_acc_probs[t,i] <- pos_prop$prob
-      if(runif(1) < pos_prop$prob) {
-        par_t$Z[i,] <- pos_prop$Zi
-        par_t$dists[[par_t$gamma[i]]] <- as.matrix(dist(par_t$Z[par_t$gamma == par_t$gamma[i],]))
-      } 
-    }
-    #if(verbose) cat("    Av proposal acceptance probability", mean(pmin(pos_acc_probs[t,], 1)), "\n")
-    
-    # Other updates
-    # randomize order
-    #if(verbose) cat("  Updating others.\n")
-    ord <- sample(3, 3, replace=FALSE)
-    for(up in ord) {
-      #if(up == 1) par_t$pi <- pi_update(par_t, alpha0)
-      #if(up == 2) par_t$B <- B_update(par_t, a0, b0)
-      if(up == 1) {
-        for(k in 1:K) {
-          theta_prop <- theta_proposal(k, Atheta, par_t)
-          theta_acc_probs[t,k] <- theta_prop$prob
-          if(runif(1) < theta_prop$prob) {
-            par_t$beta[k] <- theta_prop$thetak[1]
-            par_t$sigma[k] <- exp(theta_prop$thetak[2])
-            par_t$theta[k,] <- theta_prop$thetak
-          }
-        }
-        #if(verbose) cat("    Av beta acceptance probability", mean(pmin(beta_acc_probs[t,], 1)), "\n")
-      }
-      if(up == 2) par_t$mu <- mu_update(par_t, m0, s0)
-      if(up == 3) par_t$Sigma <- Sigma_update(par_t, m0, s0, psi0, nu0)
-    }
-    
-    # Save samples
-    beta[t,] <- par_t$beta
-    sigma[t,] <- par_t$sigma
-    #gamma[t,] <- par_t$gamma
-    #pi[t,] <- par_t$pi
-    mu[t,] <- par_t$mu
-    Sigma[t,,] <- par_t$Sigma
-    #B[t,,] <- par_t$B
-    Z[t,,] <- par_t$Z
-    if(likelihood) loglik[t,] <- log_likelihood(Y, par_t, alpha0, a0, b0, m0, s0, psi0, nu0)
-  }
-  output <- list(beta=beta, sigma=sigma, mu=mu, Sigma=Sigma, Z=Z, gamma=par_t$gamma,
-                 loglik=loglik,
-                 pos_acc_probs=pos_acc_probs,
-                 theta_acc_probs=theta_acc_probs)
-  if(nrow(miss_inds) > 0) {
-    output$Ymiss <- Ymiss
-    output$miss_inds <- miss_inds
-  }
-  if(postprocess) return(postprocess_MCMC_nomemb(output, Y, burn_in=burn_in, thin=thin, true_gamma=true_gamma))
-  else return(output)
-}
-
-
-
 log_likelihood <- function(Y, par_t, alpha0, a0, b0, m0, s0, psi0, nu0) {
   K <- length(par_t$pi)
   d <- ncol(par_t$Z)
@@ -397,112 +240,7 @@ log_likelihood <- function(Y, par_t, alpha0, a0, b0, m0, s0, psi0, nu0) {
 # variances, etc as arguments.
 #######################################
 
-joint_proposal_all <- function(epsilon, delta, rZ, par_t) {
-  N <- par_t$N
-  K <- par_t$K
-  D <- ncol(par_t$Z)
-  
-  gamma_star <- rep(NA, N)
-  Z_star <- matrix(NA, ncol=D, nrow=N)
-  lambda_star <- matrix(NA, nrow=N, ncol=K)
-  log_acc_prob <- 0
-  for(i in 1:N) {
-    #propose new membership
-    edge_blocks <- par_t$Y[i,] * par_t$gamma
-    block_counts <- sapply(1:K, function(k) sum(edge_blocks == k))
-    unscaled <- (1-epsilon) * block_counts / (par_t$block_n +1) + epsilon / par_t$pi
-    lambdai <- (1-delta) * unscaled/sum(unscaled)
-    lambdai[par_t$gamma[i]] <- delta
-    gamma_star[i] <- sample(K, 1, prob=lambdai)
-    log_acc_prob <- log_acc_prob - log(lambdai[gamma_star[i]]) # transition probability
-  }
-  
-  # position proposals
-  for(i in 1:N) {
-    if(gamma_star[i] == par_t$gamma[i]) {
-      mi <- par_t$Z[i,]
-    }
-    else {
-      friends_in_block <- which(par_t$Y[i,] == 1 & par_t$gamma == gamma_star[i])
-      if(length(friends_in_block) > 1) mi <- colMeans(par_t$Z[friends_in_block,])
-      if(length(friends_in_block) == 1) mi <- par_t$Z[friends_in_block,]
-      if(length(friends_in_block) == 0) mi <- c(0,0)
-    }
-    Z_star[i,] <- rnorm(D, mi, rZ)
-    log_acc_prob <- log_acc_prob - sum(dnorm(Z_star[i,], mi, rZ, log=TRUE))
-  }
-  
-  block_n_star <- rep(0, K)
-  block_n_star[sapply(1:K, function(k) any(gamma_star == k))] <- c(table(gamma_star))
-  s_star <- matrix(NA, ncol=K, nrow=K) 
-  for(i in 1:par_t$K) for(j in 1:i) s_star[i,j] <- s_star[j,i] <- sum(par_t$Y[gamma_star == i, gamma_star == j])
-  dists_star <- lapply(1:K, function(k) as.matrix(dist(Z_star[which(gamma_star == k),])))
-  
-  if(any(block_n_star < 2)) {
-    return(list(gamma=gamma_star,
-                Z=Z_star,
-                prob=0,
-                block_n=block_n_star,
-                s=s_star))
-  }
-  
-  # Reverse transition probabilities
-  for(i in 1:N) {
-    edge_blocks <- par_t$Y[i,] * gamma_star
-    block_counts <- sapply(1:K, function(k) sum(edge_blocks == k))
-    unscaled <- (1-epsilon) * block_counts / (block_n_star +1) + epsilon / par_t$pi
-    lambdai <- (1-delta) * unscaled/sum(unscaled)
-    lambdai[gamma_star[i]] <- delta
-    log_acc_prob <- log_acc_prob + log(lambdai[par_t$gamma[i]]) # transition probability
-  
-    if(par_t$gamma[i] == gamma_star[i]) {
-      mi <- Z_star[i,]
-    }
-    else {
-      friends_in_block <- which(par_t$Y[i,] == 1 & gamma_star == par_t$gamma[i])
-      if(length(friends_in_block) > 1) mi <- colMeans(Z_star[friends_in_block,])
-      if(length(friends_in_block) == 1) mi <- Z_star[friends_in_block,]
-      if(length(friends_in_block) == 0) mi <- c(0,0)
-    }
-    log_acc_prob <- log_acc_prob + sum(dnorm(par_t$Z[i,], mi, rZ, log=TRUE))
-  }
-  
-  # Prior for Z
-  log_acc_prob <- sum(sapply(1:K, function(k) {
-    sum(dnorm(c(Z_star[which(gamma_star == k),]), 0, par_t$sigma[k], log=TRUE)) - sum(dnorm(c(par_t$Z[which(par_t$gamma == k),]), 0, par_t$sigma[k], log=TRUE))    
-  }))
-
-  # Prior for gamma
-  log_acc_prob <- log_acc_prob + sum((block_n_star - par_t$block_n) * log(par_t$pi))
-  
-  # off diagonal
-  poss <- outer(par_t$block_n, par_t$block_n)
-  poss_star <- outer(block_n_star, block_n_star)
-  if(nrow(poss_star) != K) {
-    print("we got a problem")
-  }
-  log_acc_prob <- sum((s_star - par_t$s)[lower.tri(s_star, diag=FALSE)] * log(par_t$B[lower.tri(par_t$B, diag=FALSE)])) + sum((poss_star - s_star - poss + par_t$s)[lower.tri(s_star, diag=FALSE)] * log(1 - par_t$B[lower.tri(par_t$B, diag=FALSE)]))
-  
-  # diagonal
-  for(k in 1:K) {
-    k_membs_star <- which(gamma_star == k) 
-    etak_star <- par_t$beta[k] - dists_star[[k]]
-    mat_star <- par_t$Y[k_membs_star, k_membs_star] * etak_star - log1p(exp(etak_star))
-    
-    k_membs <- which(par_t$gamma == k) 
-    etak <- par_t$beta[k] - par_t$dists[[k]]
-    mat <- par_t$Y[k_membs, k_membs] * etak - log1p(exp(etak))
-    log_acc_prob <- log_acc_prob + sum(mat_star[lower.tri(mat_star, diag=FALSE)])  - sum(mat[lower.tri(mat, diag=FALSE)]) 
-  }
-  
-  return(list(gamma=gamma_star,
-              Z=Z_star,
-              prob=as.numeric(exp(log_acc_prob)),
-              block_n=block_n_star,
-              s=s_star))
-}
-
-joint_proposal <- function(i, epsilon, delta, rZ, par_t) {
+joint_proposal <- function(i, epsilon, rZ, par_t) {
   Y <- par_t$Y
   Yi <- Y[i,]
   N <- par_t$N
@@ -519,9 +257,8 @@ joint_proposal <- function(i, epsilon, delta, rZ, par_t) {
     lambdai[gammai_t] <- 1
     gammai_star <- gammai_t
   } else {
-    unscaled <- (1-epsilon) * block_counts / (par_t$block_n +1) + epsilon / par_t$pi
-    lambdai <- (1-delta) * unscaled/sum(unscaled)
-    lambdai[gammai_t] <- delta
+    unscaled <- (block_counts+epsilon) / (par_t$block_n +1)
+    lambdai <- unscaled/sum(unscaled)
     gammai_star <- sample(K, 1, prob=lambdai)
   }
   
@@ -529,9 +266,8 @@ joint_proposal <- function(i, epsilon, delta, rZ, par_t) {
   block_n_star[gammai_t] <- block_n_star[gammai_t] - 1
   block_n_star[gammai_star] <- block_n_star[gammai_star] + 1
   
-  unscaled_rev <- (1-epsilon) * block_counts / (block_n_star +1) + epsilon / par_t$pi
-  lambdai_rev <- (1-delta) * unscaled_rev/sum(unscaled_rev)
-  lambdai_rev[gammai_star] <- delta
+  unscaled_rev <- (block_counts+epsilon) / (block_n_star +1)
+  lambdai_rev <- unscaled_rev / sum(unscaled_rev)
   
   if(gammai_star == gammai_t) {
     mi <- Zi_t
@@ -737,40 +473,17 @@ dists_to_vec <- function(vec, mat) {
 # Postprocesses the output of a call to
 # block_latent_mcmc using the algorithm
 # described in the appendix.
-# If true_gamma is specified then it 
-# rotates membership samples toward
-# true_gamma. Otherwise it uses the
-# joint posterior mode as the fixed 
-# membership toward which to rotate.
+# Rotates membership samples toward
+# fixed_memb.
 ######################################
 
-postprocess_MCMC <- function(output, Y, true_gamma=NULL) {
+postprocess_MCMC <- function(output, Y, fixed_memb) {
   require(clue)
   K <- ncol(output$pi)
   N <- ncol(output$gamma)
   D <- dim(output$Z)[3]
   print("Postprocessing posteriors samples...")
   nsamp <- nrow(output$gamma)
-  
-  # Compute posterior mode membership
-  gamma_vecs <- apply(output$gamma,1,paste0, collapse='.')
-  gamma_mode <- names(table(gamma_vecs))[which.max(table(gamma_vecs))]
-  fixed_memb <- as.numeric(strsplit(gamma_mode, ".", fixed=TRUE)[[1]])
-  ### code for computing marginal modes
-  #   fixed_memb <- apply(output$gamma[ind,], 2, function(col) {
-  #     t <- table(col)
-  #     as.numeric(names(t)[which.max(t)])
-  #   })
-  ###
-  
-  # If a true membership was supplied, permute posterior mode
-  if(!is.null(true_gamma)) {
-    tab <- table(fixed_memb, true_gamma)
-    perm <- c(solve_LSAP(as.matrix(tab), maximum=TRUE))
-    new_fixed_memb <- rep(NA, N)
-    for(val in 1:K) new_fixed_memb[fixed_memb == val] <- perm[val]
-    fixed_memb <- new_fixed_memb
-  }
   
   for(s in 1:nrow(output$gamma)) {
     tab <- table(output$gamma[s,], fixed_memb)
