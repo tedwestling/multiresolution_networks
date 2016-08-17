@@ -423,20 +423,37 @@ theta_proposal <- function(k, Atheta, par_t) {
 }
 
 mu_update <- function(par_t,  m0, s0, a0, b0) {
+	require(truncnorm)
+#new strategy is to update the two mu's marginally so we enforce the constraint one one dimension at a time
+	#sample size 
   N <- par_t$N
+  	#number of blocks
   K <- par_t$K
+  	#Joint update would be a sample from a MVN with mean m and sd matrix co
+  	#m is vector of length 2 co is 2 by 2 matrix
   m <- (colSums(par_t$theta) + s0 * m0) / (K + s0)
   co <- par_t$Sigma / (K + s0)
-  i <- 1
+  #print(co)
+#dimension of latent space
   D <- ncol(par_t$Z)
+#constant in front of constraint
   cD <- 2 * gamma((D + 1)/2) / gamma(D/2)
-  while(TRUE) {
-    if(i %% 50 == 0) cat(paste("Rejection sampling for global assortativity prior on mu is taking a long time: sample", i, "/n"))
-    mu_star <- mvrnorm(1, m, co)
-    if(digamma(a0) - digamma(b0) <= mu_star[1] - cD * exp(mu_star[2])) break
-    #if(exp_value(mu_star[1], exp(mu_star[2])) >= a0/b0) break
-    i <- i + 1
-  }
+  mu_star<-c(NA,NA)
+  #note that the OLD value of mu2 goes into the constraint, not the current average of thetas that goes into the gibbs update 
+  constraintmu1=digamma(a0) - digamma(b0)+(cD * exp(par_t$mu[2]))
+  #update mu1
+  rho=co[1,2]/sqrt(co[1,1]*co[2,2])
+  #print(rho)
+  mu1mean=m[1]+((sqrt(co[1,1])/sqrt(co[2,2]))*rho*(par_t$mu[2]-m[2]))
+  mu1sd=sqrt((1-rho^2)*co[1,1])
+  mu_star[1]<-rtruncnorm(1,a=constraintmu1,mean=mu1mean,sd=mu1sd)
+  #note this is an UPPER bound now; sign flips bc of subtraction
+  #note now we use the UPDATED value of mu[1]
+  constraintmu2=log((-cD)*(digamma(a0)-digamma(b0)-mu_star[1]))
+  mu2mean=m[2]+((sqrt(co[2,2])/sqrt(co[1,1]))*rho*(mu_star[1]-m[1]))
+  mu2sd=sqrt((1-rho^2)*co[2,2])
+  mu_star[2]<-rtruncnorm(1,b=constraintmu2,mean=mu2mean,sd=mu2sd)
+ # print(mu_star)
   return(mu_star)
 }
 
