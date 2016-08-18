@@ -91,6 +91,7 @@ block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, 
     if(verbose & (t %% 100 == 0)) {  
       time_left <- (c(difftime(Sys.time(), start_time, units="secs")) / t) * (total_samples - t)
       cat("Iteration", t, "of", total_samples, ",", round(c(time_left)/60, 2), "minutes left\n")
+      cat("Current mu value",round(par_t$mu,2),"constraints enforced\n")
     }
     if(plot_init & (t %% 100 == 0))  plot_blocked_matrix(par_t$Y, par_t$gamma)
     # Sample missing values from current parameter estimates first because we need Y with no missing values for the other updates
@@ -423,7 +424,7 @@ theta_proposal <- function(k, Atheta, par_t) {
 }
 
 mu_update <- function(par_t,  m0, s0, a0, b0) {
-	require(truncnorm)
+	require(msm)
 #new strategy is to update the two mu's marginally so we enforce the constraint one one dimension at a time
 	#sample size 
   N <- par_t$N
@@ -439,6 +440,15 @@ mu_update <- function(par_t,  m0, s0, a0, b0) {
 #constant in front of constraint
   cD <- 2 * gamma((D + 1)/2) / gamma(D/2)
   mu_star<-c(NA,NA)
+  #####print everything before the update
+ # print("printing inputs")
+ # print("m")
+ # print(m)
+ # print("co")
+ # print(co)
+ # print("cD")
+ # print(cD)
+  #############
   #note that the OLD value of mu2 goes into the constraint, not the current average of thetas that goes into the gibbs update 
   constraintmu1=digamma(a0) - digamma(b0)+(cD * exp(par_t$mu[2]))
   #update mu1
@@ -446,14 +456,31 @@ mu_update <- function(par_t,  m0, s0, a0, b0) {
   #print(rho)
   mu1mean=m[1]+((sqrt(co[1,1])/sqrt(co[2,2]))*rho*(par_t$mu[2]-m[2]))
   mu1sd=sqrt((1-rho^2)*co[1,1])
-  mu_star[1]<-rtruncnorm(1,a=constraintmu1,mean=mu1mean,sd=mu1sd)
+  ######
+  #print("mu1 constraint")
+  #print(constraintmu1)
+  #print("mean of mu1")
+  #print(mu1mean)
+  #print("mu 1sd")
+  #print(mu1sd)
+  ######
+  mu_star[1]<-rtnorm(1,lower=constraintmu1,mean=mu1mean,sd=mu1sd)
   #note this is an UPPER bound now; sign flips bc of subtraction
   #note now we use the UPDATED value of mu[1]
-  constraintmu2=log((-cD)*(digamma(a0)-digamma(b0)-mu_star[1]))
+  constraintmu2=log((digamma(a0)-digamma(b0)-mu_star[1])/(-cD))
   mu2mean=m[2]+((sqrt(co[2,2])/sqrt(co[1,1]))*rho*(mu_star[1]-m[1]))
   mu2sd=sqrt((1-rho^2)*co[2,2])
-  mu_star[2]<-rtruncnorm(1,b=constraintmu2,mean=mu2mean,sd=mu2sd)
- # print(mu_star)
+    ######
+  #print("mu2 constraint")
+  #print(constraintmu2)
+  #print("mean of mu2")
+  #print(mu2mean)
+  #print("mu 2sd")
+  #print(mu2sd)
+  ######
+  mu_star[2]<-rtnorm(1,upper=constraintmu2,mean=mu2mean,sd=mu2sd)
+ #print("mu_star")
+ #	print(mu_star)
   return(mu_star)
 }
 
