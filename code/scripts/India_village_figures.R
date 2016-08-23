@@ -1,23 +1,20 @@
 # ###############################################################################
 # # Multi-resolution blockmodel
 # #
-# # file: indian_village_postprocess.R
+# # file: indian_village_figures.R
 # # 
-# # This file does convergence checks, does post processing, and makes plots for 
-# #the India village data.  Assuming that we have already run India_village_estimation.R
-# ## and have results.  
+# # This file makes the plots for the paper.  Assuming that we have already run India_village_estimation.R
+# ## and have results and have post-processed them with India_village_postprocess.R.  
 # #
-# #
-# #Setup here to use four chains, but can be run with more/fewer.  To use this file, you'll
-# #need to be sure that the names of the 
-# #
-# #This file should be placed in the same directory as  the header.R file.
 # #
 # # Author: tedwestling
 # ###############################################################################
-# rm(list = ls())
-# # Source header file (should be in top level of working directory)
-# source('header.R')
+ rm(list = ls())
+#set your working directory to the top level multiresolution_networks folder
+setwd("")
+
+ # Source header file (should be in top level of working directory)
+ source('header.R')
 
 # # We set the seed numerous times throughout the document at points at natural reload points
 # set.seed(22311) 

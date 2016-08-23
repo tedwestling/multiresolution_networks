@@ -64,10 +64,14 @@ ggplot(Kchoice$mean_aucs) +
 
 K <- Khat <- 6
 
+##set the a0 and b0 parameters according to assortativity restriction
+dens <- sum(network, na.rm=TRUE)/(N^2 - N)
+b0=1
+a0=(b0*(10*dens))/(1-(10*dens))
+
 # Perform the MCMC
 # In our implementation, we ran four chains in parallel.  
-set.seed(3291)
-chain1 <- block_latent_MCMC(network, D=2, K=Khat, burn_in=20000, n_samples=2500, thin=100, rZ=3, v=5, Atheta=matrix(c(1,.4,.4,1),nrow=2), likelihood=FALSE, alpha0 = Khat, postprocess = FALSE, plot_init=TRUE)
+chain1 <- block_latent_MCMC(network, D=2, K=Khat, burn_in=0, n_samples=8000, thin=20, rZ=3, v=3, Atheta=matrix(c(1,.4,.4,1),nrow=2), likelihood=FALSE, alpha0 = Khat,a0=a0, b0=b0, postprocess = FALSE, plot_init=TRUE)
 
 save(chain1, file='data/results/village_59_mcmc_chain1.Rdata')
 
