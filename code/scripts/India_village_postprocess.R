@@ -86,4 +86,4 @@ mcmc_samplesc3 <- postprocess_MCMC(chain3, network, fixed_memb = spec[[1]]$clust
 mcmc_samplesc4 <- postprocess_MCMC(chain4, network, fixed_memb = spec[[1]]$clusters)
 
 #save your post-processed samples
-save.image("data/results/village_59_mcmc_postprocessed.Rdata")
+save.image("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")

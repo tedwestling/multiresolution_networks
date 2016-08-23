@@ -11,80 +11,8 @@
 # ###############################################################################
  rm(list = ls())
 #set your working directory to the top level multiresolution_networks folder
-setwd("")
+setwd("~/Dropbox/git_to_work/multiresolution_networks")
 
- # Source header file (should be in top level of working directory)
- source('header.R')
-
-# # We set the seed numerous times throughout the document at points at natural reload points
-# set.seed(22311) 
-# vilno <- 59
-# edgetype <- 'visitcome'
-
-# # Load in household-level network data for the particular edgetype and village
-# network <- as.matrix(read.csv(paste0('data/indian_village_raw/1. Network Data/Adjacency Matrices/adj_', edgetype, '_HH_vilno_', vilno, '.csv'), header=FALSE))
-
-# # Remove nodes with degree 0
-# fullnetwork <- network
-# zros <- which(colSums(network) == 0)
-# network <- network[-zros, -zros]
-# N <- nrow(network)
-# K <- Khat <- 6
-
-# thinfirst=T
-# thinfac=4 #keep every fourth
-# #note on these runs we've already thinned by 10 within the sampler
-# ####for the longer chains, add some thinning
-
-# load('data/results/village_59_mcmc_strongass_v3_1.Rdata')
-# chain1a=chain1
-# load('data/results/village_59_mcmc_strongass_v3_2.Rdata')
-# chain2=chain1
-# load('data/results/village_59_mcmc_strongass_v3_3.Rdata')
-# chain3=chain1
-# load('data/results/village_59_mcmc_strongass_v3_4.Rdata')
-# chain4=chain1
-# chain1=chain1a
-
-# if(thinfirst==T){
-	# #list(beta=beta, sigma=sigma, pi=pi, mu=mu, Sigma=Sigma, B=B, Z=Z, gamma=gamma)
-	# keep=which(c(1:length(chain1$beta[,1]))%%thinfac==0)
-	# chain1=list(beta=chain1$beta[keep,], sigma=chain1$sigma[keep,], pi=chain1$pi[keep,], mu=chain1$mu[keep,], Sigma=chain1$Sigma[keep,,], B=chain1$B[keep,,], Z=chain1$Z[keep,,], gamma=chain1$gamma[keep,])
-	# #
-	# chain2=list(beta=chain2$beta[keep,], sigma=chain2$sigma[keep,], pi=chain2$pi[keep,], mu=chain2$mu[keep,], Sigma=chain2$Sigma[keep,,], B=chain2$B[keep,,], Z=chain2$Z[keep,,], gamma=chain2$gamma[keep,])
-	# #
-	# chain3=list(beta=chain3$beta[keep,], sigma=chain3$sigma[keep,], pi=chain3$pi[keep,], mu=chain3$mu[keep,], Sigma=chain3$Sigma[keep,,], B=chain3$B[keep,,], Z=chain3$Z[keep,,], gamma=chain3$gamma[keep,])
-	# #
-	# chain4=list(beta=chain4$beta[keep,], sigma=chain4$sigma[keep,], pi=chain4$pi[keep,], mu=chain4$mu[keep,], Sigma=chain4$Sigma[keep,,], B=chain4$B[keep,,], Z=chain4$Z[keep,,], gamma=chain4$gamma[keep,])
-
-# }
-
-# # Postprocess Samples
-# all_chains <- list(beta=rbind(chain1$beta, chain2$beta, chain3$beta, chain4$beta),
-                # sigma=rbind(chain1$sigma, chain2$sigma, chain3$sigma, chain4$sigma),
-                 # pi=rbind(chain1$pi, chain2$pi, chain3$pi, chain4$pi),
-                 # mu=rbind(chain1$mu, chain2$mu, chain3$mu, chain4$mu),
-                 # Sigma=abind(chain1$Sigma, chain2$Sigma, chain3$Sigma, chain4$Sigma, along=1),
-                 # B=abind(chain1$B, chain2$B, chain3$B, chain4$B, along=1),
-                 # Z=abind(chain1$Z, chain2$Z, chain3$Z, chain4$Z, along=1),
-                 # gamma=rbind(chain1$gamma, chain2$gamma, chain3$gamma, chain4$gamma))
-
-# set.seed(303854)
-# # Use asortative spectral clustering estimate as fixed membership vector to rotate towards
-# spec <- spectral_cluster(network, Krange = Khat, assortative = TRUE, plot=FALSE, degree_correct = FALSE)
-# #uncomment to plot spectral clusters
-# #plot_blocked_matrix(network, spec[[1]]$clusters)
-
-# mcmc_samplesc1 <- postprocess_MCMC(chain1, network, fixed_memb = spec[[1]]$clusters)
-# mcmc_samplesc2 <- postprocess_MCMC(chain2, network, fixed_memb = spec[[1]]$clusters)
-# mcmc_samplesc3 <- postprocess_MCMC(chain3, network, fixed_memb = spec[[1]]$clusters)
-# mcmc_samplesc4 <- postprocess_MCMC(chain4, network, fixed_memb = spec[[1]]$clusters)
-
-# ####checkpoint save and load if above is run already
-# ####checkpoint save and load if above is run already
-# ####checkpoint save and load if above is run already
-# #save.image("data/results/village_59_mcmc_strongass_v3_postprocessed.Rdata")
-rm(list = ls())
 load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
 
 #assuming here that we've done no burn-in on the sampling, so removing first 1k iterations
@@ -112,58 +40,56 @@ beta_array[,1,]<-mcmc_samplesc1$beta
 beta_array[,2,]<-mcmc_samplesc2$beta
 beta_array[,3,]<-mcmc_samplesc3$beta
 beta_array[,4,]<-mcmc_samplesc4$beta
-print(monitor(beta_array))
 
 sigma_array=array(dim=c(dim(mcmc_samplesc1$sigma)[1],howmanychains,dim(mcmc_samplesc1$sigma)[2]))
 sigma_array[,1,]<-mcmc_samplesc1$sigma
 sigma_array[,2,]<-mcmc_samplesc2$sigma
 sigma_array[,3,]<-mcmc_samplesc3$sigma
 sigma_array[,4,]<-mcmc_samplesc4$sigma
-monitor(sigma_array)
+
 
 pi_array=array(dim=c(dim(mcmc_samplesc1$pi)[1],howmanychains,dim(mcmc_samplesc1$pi)[2]))
 pi_array[,1,]<-mcmc_samplesc1$pi
 pi_array[,2,]<-mcmc_samplesc2$pi
 pi_array[,3,]<-mcmc_samplesc3$pi
 pi_array[,4,]<-mcmc_samplesc4$pi
-monitor(pi_array)
-
 
 mu_array=array(dim=c(dim(mcmc_samplesc1$mu)[1],howmanychains,dim(mcmc_samplesc1$mu)[2]))
 mu_array[,1,]<-mcmc_samplesc1$mu
 mu_array[,2,]<-mcmc_samplesc2$mu
 mu_array[,3,]<-mcmc_samplesc3$mu
 mu_array[,4,]<-mcmc_samplesc4$mu
-print(monitor(mu_array))
 
 Sigma_array=array(dim=c(dim(mcmc_samplesc1$Sigma)[1],howmanychains,4))
 Sigma_array[,1,]<-matrix(mcmc_samplesc1$Sigma,dim(mcmc_samplesc1$Sigma)[1],4)
 Sigma_array[,2,]<-matrix(mcmc_samplesc2$Sigma,dim(mcmc_samplesc2$Sigma)[1],4)
 Sigma_array[,3,]<-matrix(mcmc_samplesc3$Sigma,dim(mcmc_samplesc3$Sigma)[1],4)
 Sigma_array[,4,]<-matrix(mcmc_samplesc4$Sigma,dim(mcmc_samplesc4$Sigma)[1],4)
-monitor(Sigma_array)
 
-#note that 30 here is set up for 6 blocks (6*6-6 on the diagonal)
+
+
+#note there are 30 for 6 blocks (6*6-6 on the diagonal)
 #need to change if you're using fewer blocks
 B_array=array(dim=c(dim(mcmc_samplesc1$B)[1],howmanychains,((Khat*Khat)-Khat)))
 B_array[,1,]<-matrix(mcmc_samplesc1$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc1$B)[1],((Khat*Khat)-Khat))
 B_array[,2,]<-matrix(mcmc_samplesc2$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc2$B)[1],((Khat*Khat)-Khat))
 B_array[,3,]<-matrix(mcmc_samplesc3$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc3$B)[1],((Khat*Khat)-Khat))
 B_array[,4,]<-matrix(mcmc_samplesc4$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc4$B)[1],((Khat*Khat)-Khat))
-monitor(B_array)
 
 gamma_array=array(dim=c(dim(mcmc_samplesc1$gamma)[1],howmanychains,dim(mcmc_samplesc1$gamma)[2]))
 gamma_array[,1,]<-mcmc_samplesc1$gamma
 gamma_array[,2,]<-mcmc_samplesc2$gamma
 gamma_array[,3,]<-mcmc_samplesc3$gamma
 gamma_array[,4,]<-mcmc_samplesc4$gamma
-monitor(gamma_array)
 
+#monitor(B_array)
+#monitor(Sigma_array)
+#monitor(mu_array)
+#monitor(pi_array)
+#monitor(sigma_array)
+#monitor(beta_array)
 
-
-
-
-prefix="data/results/village_59_mcmc_strongass_k5v1_"
+prefix="plots/"
 ###make trace plots
 #mu
 pdf(file=paste(prefix,"mutrace.pdf",sep=''),height=10,width=6)
@@ -313,28 +239,28 @@ ggsave(paste(prefix,'posterior_parameters.png',sep=''), g, width=4.5, height=2.5
 
 ## Density plots of block-specific parameters ## NOT USED IN PAPER
 
-ggplot(block_params) +
-  geom_density2d(aes(beta, logsigma)) +
-  geom_point(data=mean_block_params, aes(beta, logsigma), color='red') +
-  facet_wrap(~Block, nrow=2) +
-  xlab(expression(beta)) +
-  ylab(expression(log(sigma))) +
-  theme_bw() +
-  geom_density2d(data=data.frame(beta=mcmc_samples$mu[,1], logsigma=mcmc_samples$mu[,2]), aes(beta, logsigma), color='black') +
-  theme(strip.background=element_blank())
-ggsave(paste(prefix,'posterior_parameters.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+# ggplot(block_params) +
+  # geom_density2d(aes(beta, logsigma)) +
+  # geom_point(data=mean_block_params, aes(beta, logsigma), color='red') +
+  # facet_wrap(~Block, nrow=2) +
+  # xlab(expression(beta)) +
+  # ylab(expression(log(sigma))) +
+  # theme_bw() +
+  # geom_density2d(data=data.frame(beta=mcmc_samples$mu[,1], logsigma=mcmc_samples$mu[,2]), aes(beta, logsigma), color='black') +
+  # theme(strip.background=element_blank())
+# ggsave(paste(prefix,'posterior_parameters2.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 
-## Global mean samples and posterior density ## NOT USED IN PAPER
+# ## Global mean samples and posterior density ## NOT USED IN PAPER
 
-ggplot(data.frame(mcmc_samples$mu)) +
-  geom_point(data=data.frame(mcmc_samples$mu[sample(1:nrow(mcmc_samples$mu), 1000, replace=FALSE),]), aes(X1, X2), alpha=.5) +
-  geom_density2d(aes(X1, X2)) +
-  geom_path(data=hpd, aes(x,y), col='red') +
-  xlab(expression(mu[1])) +
-  ylab(expression(mu[2])) +
-  geom_point(x=mean(mcmc_samples$mu[,1]), y=mean(mcmc_samples$mu[,2]), col='red') +
-  theme_bw()
-ggsave(paste(prefix,'posterior_parameters2.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+# ggplot(data.frame(mcmc_samples$mu)) +
+  # geom_point(data=data.frame(mcmc_samples$mu[sample(1:nrow(mcmc_samples$mu), 1000, replace=FALSE),]), aes(X1, X2), alpha=.5) +
+  # geom_density2d(aes(X1, X2)) +
+  # geom_path(data=hpd, aes(x,y), col='red') +
+  # xlab(expression(mu[1])) +
+  # ylab(expression(mu[2])) +
+  # geom_point(x=mean(mcmc_samples$mu[,1]), y=mean(mcmc_samples$mu[,2]), col='red') +
+  # theme_bw()
+# ggsave(paste(prefix,'posterior_parameters3.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 
 ## Computations presented in paper
 
