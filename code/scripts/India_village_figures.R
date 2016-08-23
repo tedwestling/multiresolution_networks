@@ -12,8 +12,9 @@
  rm(list = ls())
 #set your working directory to the top level multiresolution_networks folder
 setwd("~/Dropbox/git_to_work/multiresolution_networks")
-
-load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
+source("header.R")
+#load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
+load("/Users/tylermccormick/Dropbox/git_to_work/village_59_mcmc_strongass_v1_postprocessed.Rdata")
 
 #assuming here that we've done no burn-in on the sampling, so removing first 1k iterations
 nburn=c(1:(length(chain1$mu[,1])*.25))
@@ -162,53 +163,135 @@ png(paste(prefix,'blocked_adjacency.png',sep=''), width=2, height=2, units='in',
 plot_blocked_matrix(network, gamma_mode, sort=FALSE)
 dev.off()
 
-## Make dataset of latent positions
+# ## Make dataset of latent positions
+# nsamp <- nrow(mcmc_samples$beta)
+# Z <- ldply(1:N, function(memb) {
+  # all <- data.frame(mcmc_samples$Z[,memb,])
+  # names(all) <- paste0("Z", 1:2)
+  # all$node <- memb
+  # all$sample <- 1:nsamp
+  # all$block <- mcmc_samples$gamma[,memb]
+  # return(all)
+# })
+
+# all_mean_df <- NULL
+# all_edge_df <- NULL
+# for(k in 1:K) {
+  # nodes_in <- which(gamma_mode == k)
+  # edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
+  # samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)
+  # mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2)))
+  # mean_df$Block <- k
+  # all_mean_df <- rbind(all_mean_df, mean_df)
+  
+  # edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]])
+  # if(nrow(edges) != 0) edge_df$Block <- k
+  # all_edge_df <- rbind(all_edge_df, edge_df)
+# }
+# 
+# ggplot(all_mean_df) + geom_point(aes(Z1, Z2)) + geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend))+ theme_bw() + facet_wrap(~block, nrow=floor(sqrt(K)), scales='free') +coord_fixed(ratio=1)
+
+#hhold <- read.dta('data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta')
+hhold<-read.dta("/Users/tylermccormick/Dropbox/git_to_work/slurm/data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta")
+hhold <- subset(hhold, village==vilno)
+
+# ###set up for plot by religion
+# hhold$hohreligion <- as.character(hhold$hohreligion)
+# names(hhold)[3] <- "node"
+# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
+# all_mean_df2$hohreligion[is.na(all_mean_df2$hohreligion)] <- "Unknown"
+# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
+
+# # Plot of latent positions - Figure 3
+# (g <- ggplot(all_mean_df2) + 
+  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + 
+  # geom_point(aes(Z1, Z2, color=as.factor(leader), shape=hohreligion)) + 
+  # theme_bw() +
+  # facet_wrap(~Block, nrow=2, scales='free') +
+  # coord_fixed(ratio=1) + 
+  # scale_shape_manual(name="HH Religion", breaks=c("HINDUISM", "ISLAM", "CHRISTIANITY", "Unknown"), values=c(1, 2, 3, 4), labels=c("Hindu", "Muslim", "Christian", "Unknown")) +
+  # scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +
+  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
+# ggsave(paste(prefix,'latent_positions_byrel.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+
+
+# ###set up for plot by caste
+# hhold$castesubcaste <- as.character(hhold$castesubcaste)
+# names(hhold)[3] <- "node"
+# #merge the covariate information with the block and latent positions
+# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
+# all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"
+# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
+
+# # Plot of latent positions - Figure 3
+# (g <- ggplot(all_mean_df2) + 
+  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + 
+  # geom_point(aes(Z1, Z2, color=as.factor(castesubcaste), shape=castesubcaste)) + 
+  # theme_bw() +
+  # facet_wrap(~Block, nrow=2, scales='free') +
+  # coord_fixed(ratio=1) + 
+  # #scale_shape_manual(name="HH Caste", breaks=c("GENERAL", "MINORITY", "OBC", "SCHEDULE CASTE", "SCHEDULE TRIBE", "Unknown"), values=c(1, 2, 3, 4, 5,6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
+  # #scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +
+  # scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
+  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
+# ggsave(paste(prefix,'latent_positions_bycaste.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+
+######################################################shaded by probabilty
 nsamp <- nrow(mcmc_samples$beta)
 Z <- ldply(1:N, function(memb) {
-  all <- data.frame(mcmc_samples$Z[,memb,])
-  names(all) <- paste0("Z", 1:2)
-  all$node <- memb
-  all$sample <- 1:nsamp
-  all$block <- mcmc_samples$gamma[,memb]
-  return(all)
+  tab <- table(mcmc_samples$gamma[,memb])/nsamp
+  this_blocks <- as.numeric(names(tab)[tab > .3]) ### 0.2 is the probability cutoff for being in the block
+  ldply(this_blocks, function(block) {
+    df <- data.frame(mcmc_samples$Z[mcmc_samples$gamma[,memb] == block,memb,])
+    names(df) <- paste0("Z", 1:2)
+    df$block <- block
+    df$node <- memb
+    return(df)
+  })
 })
 
 all_mean_df <- NULL
 all_edge_df <- NULL
 for(k in 1:K) {
-  nodes_in <- which(gamma_mode == k)
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)
-  mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2)))
-  mean_df$Block <- k
-  all_mean_df <- rbind(all_mean_df, mean_df)
-  
-  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]])
-  if(nrow(edges) != 0) edge_df$Block <- k
-  all_edge_df <- rbind(all_edge_df, edge_df)
+  nodes_in <- unique(Z$node[Z$block == k])
+  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
+  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)
+####in the next line ted's code had 10000, changed to nsamp.  NEED TO DOUBLE CHECK THIS!!
+  mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))
+  mean_df$Block <- k
+  all_mean_df <- rbind(all_mean_df, mean_df)
+  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2)
+  if(nrow(edges) != 0) edge_df$Block <- k
+  all_edge_df <- rbind(all_edge_df, edge_df)
 }
-# 
-# ggplot(all_mean_df) + geom_point(aes(Z1, Z2)) + geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend))+ theme_bw() + facet_wrap(~block, nrow=floor(sqrt(K)), scales='free') +coord_fixed(ratio=1)
 
-hhold <- read.dta('data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta')
-hhold <- subset(hhold, village==vilno)
-hhold$hohreligion <- as.character(hhold$hohreligion)
+###set up for plot by caste
+hhold$castesubcaste <- as.character(hhold$castesubcaste)
 names(hhold)[3] <- "node"
+#merge the covariate information with the block and latent positions
 all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
-all_mean_df2$hohreligion[is.na(all_mean_df2$hohreligion)] <- "Unknown"
+all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"
 all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
 
-# Plot of latent positions - Figure 3
-(g <- ggplot(all_mean_df2) + 
-  geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + 
-  geom_point(aes(Z1, Z2, color=as.factor(leader), shape=hohreligion)) + 
-  theme_bw() +
-  facet_wrap(~Block, nrow=2, scales='free') +
-  coord_fixed(ratio=1) + 
-  scale_shape_manual(name="HH Religion", breaks=c("HINDUISM", "ISLAM", "CHRISTIANITY", "Unknown"), values=c(1, 2, 3, 4), labels=c("Hindu", "Muslim", "Christian", "Unknown")) +
-  scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-ggsave(paste(prefix,'latent_positions.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+
+(g<-ggplot(all_mean_df2) + 
+  geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob)) + 
+  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste))) + 
+  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + 
+  theme_bw() +
+  facet_wrap(~Block, nrow=2, scales='free') +
+  coord_fixed(ratio=1) + 
+  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
+ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+######################################################shaded by probabilty
+
+
+
+
+
+
+
+
 
 ## Posteriors of global parameters
 hpd_mu <- HPDregionplot(mcmc(mcmc_samples$mu))
