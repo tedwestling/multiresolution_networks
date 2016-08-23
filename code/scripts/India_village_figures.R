@@ -240,8 +240,9 @@ hhold <- subset(hhold, village==vilno)
 nsamp <- nrow(mcmc_samples$beta)
 Z <- ldply(1:N, function(memb) {
   tab <- table(mcmc_samples$gamma[,memb])/nsamp
-  this_blocks <- as.numeric(names(tab)[tab > .3]) ### 0.2 is the probability cutoff for being in the block
-  ldply(this_blocks, function(block) {
+  this_blocks <- as.numeric(names(tab)[tab > .00017]) ### has appeared in a block at least twice .00017
+#print(this_blocks)
+ldply(this_blocks, function(block) {
     df <- data.frame(mcmc_samples$Z[mcmc_samples$gamma[,memb] == block,memb,])
     names(df) <- paste0("Z", 1:2)
     df$block <- block
@@ -260,7 +261,7 @@ for(k in 1:K) {
   mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))
   mean_df$Block <- k
   all_mean_df <- rbind(all_mean_df, mean_df)
-  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2)
+  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])
   if(nrow(edges) != 0) edge_df$Block <- k
   all_edge_df <- rbind(all_edge_df, edge_df)
 }
@@ -273,14 +274,38 @@ all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
 all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"
 all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
 
+###truncate to only plot nodes with >40pct post prob of being in block
+all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]
+all_edge_df_tr <- NULL
+for(k in 1:K) {
+  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
+  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
+  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)
+#edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)
+	mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))
+ edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])
+  if(nrow(edges) != 0) edge_df_tr$Block <- k
+  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)
+}
 
-(g<-ggplot(all_mean_df2) + 
-  geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob)) + 
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste))) + 
+#set up indicators of how many blocks a person is in
+bshape=rep(NA,nrow(all_mean_df2_tr))
+bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1
+bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2
+bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3
+
+
+(g<-ggplot(all_mean_df2_tr) + 
+  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +
+  guides(alpha=FALSE)+
+  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +
+  guides(cex=FALSE)+ 
   #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + 
   theme_bw() +
   facet_wrap(~Block, nrow=2, scales='free') +
   coord_fixed(ratio=1) + 
+ scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
+ scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+
   theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
 ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 ######################################################shaded by probabilty
