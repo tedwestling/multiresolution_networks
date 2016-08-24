@@ -290,10 +290,11 @@ for(k in 1:K) {
 
 #set up indicators of how many blocks a person is in
 bshape=rep(NA,nrow(all_mean_df2_tr))
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3
-
+nshows=table(all_mean_df2_tr$node)
+for(nn in 1:length(bshape)){
+	ntmp=all_mean_df2_tr$node[nn]
+	bshape[nn]<-nshows[names(nshows)==as.character(ntmp)]
+}
 
 (g<-ggplot(all_mean_df2_tr) + 
   geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +
@@ -303,10 +304,12 @@ bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==
   #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + 
   theme_bw() +
   facet_wrap(~Block, nrow=2, scales='free') +
+  #labs(x="First latent dimension",y="Second latent dimension")+
   coord_fixed(ratio=1) + 
  scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
  scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
+theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
+#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
 ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 ######################################################shaded by probabilty
 
