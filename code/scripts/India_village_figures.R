@@ -11,7 +11,7 @@
 # ###############################################################################
  rm(list = ls())
 #set your working directory to the top level multiresolution_networks folder
-setwd("~/Dropbox/git_to_work/multiresolution_networks")
+setwd("")
 source("header.R")
 load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
 
@@ -69,7 +69,6 @@ Sigma_array[,4,]<-matrix(mcmc_samplesc4$Sigma,dim(mcmc_samplesc4$Sigma)[1],4)
 
 
 #note there are 30 for 6 blocks (6*6-6 on the diagonal)
-#need to change if you're using fewer blocks
 B_array=array(dim=c(dim(mcmc_samplesc1$B)[1],howmanychains,((Khat*Khat)-Khat)))
 B_array[,1,]<-matrix(mcmc_samplesc1$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc1$B)[1],((Khat*Khat)-Khat))
 B_array[,2,]<-matrix(mcmc_samplesc2$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc2$B)[1],((Khat*Khat)-Khat))
@@ -82,6 +81,8 @@ gamma_array[,2,]<-mcmc_samplesc2$gamma
 gamma_array[,3,]<-mcmc_samplesc3$gamma
 gamma_array[,4,]<-mcmc_samplesc4$gamma
 
+#uncomment to see monitor results
+#comment to supress if just re-making plots
 #monitor(B_array)
 #monitor(Sigma_array)
 #monitor(mu_array)
@@ -162,80 +163,11 @@ png(paste(prefix,'blocked_adjacency.png',sep=''), width=2, height=2, units='in',
 plot_blocked_matrix(network, gamma_mode, sort=FALSE)
 dev.off()
 
-# ## Make dataset of latent positions
-# nsamp <- nrow(mcmc_samples$beta)
-# Z <- ldply(1:N, function(memb) {
-  # all <- data.frame(mcmc_samples$Z[,memb,])
-  # names(all) <- paste0("Z", 1:2)
-  # all$node <- memb
-  # all$sample <- 1:nsamp
-  # all$block <- mcmc_samples$gamma[,memb]
-  # return(all)
-# })
 
-# all_mean_df <- NULL
-# all_edge_df <- NULL
-# for(k in 1:K) {
-  # nodes_in <- which(gamma_mode == k)
-  # edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-  # samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)
-  # mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2)))
-  # mean_df$Block <- k
-  # all_mean_df <- rbind(all_mean_df, mean_df)
-  
-  # edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]])
-  # if(nrow(edges) != 0) edge_df$Block <- k
-  # all_edge_df <- rbind(all_edge_df, edge_df)
-# }
-# 
-# ggplot(all_mean_df) + geom_point(aes(Z1, Z2)) + geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend))+ theme_bw() + facet_wrap(~block, nrow=floor(sqrt(K)), scales='free') +coord_fixed(ratio=1)
 
-#hhold <- read.dta('data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta')
-hhold<-read.dta("/Users/tylermccormick/Dropbox/git_to_work/slurm/data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta")
+hhold <- read.dta('data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta')
 hhold <- subset(hhold, village==vilno)
-
-# ###set up for plot by religion
-# hhold$hohreligion <- as.character(hhold$hohreligion)
-# names(hhold)[3] <- "node"
-# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
-# all_mean_df2$hohreligion[is.na(all_mean_df2$hohreligion)] <- "Unknown"
-# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
-
-# # Plot of latent positions - Figure 3
-# (g <- ggplot(all_mean_df2) + 
-  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + 
-  # geom_point(aes(Z1, Z2, color=as.factor(leader), shape=hohreligion)) + 
-  # theme_bw() +
-  # facet_wrap(~Block, nrow=2, scales='free') +
-  # coord_fixed(ratio=1) + 
-  # scale_shape_manual(name="HH Religion", breaks=c("HINDUISM", "ISLAM", "CHRISTIANITY", "Unknown"), values=c(1, 2, 3, 4), labels=c("Hindu", "Muslim", "Christian", "Unknown")) +
-  # scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +
-  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-# ggsave(paste(prefix,'latent_positions_byrel.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
-
-
-# ###set up for plot by caste
-# hhold$castesubcaste <- as.character(hhold$castesubcaste)
-# names(hhold)[3] <- "node"
-# #merge the covariate information with the block and latent positions
-# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )
-# all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"
-# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"
-
-# # Plot of latent positions - Figure 3
-# (g <- ggplot(all_mean_df2) + 
-  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + 
-  # geom_point(aes(Z1, Z2, color=as.factor(castesubcaste), shape=castesubcaste)) + 
-  # theme_bw() +
-  # facet_wrap(~Block, nrow=2, scales='free') +
-  # coord_fixed(ratio=1) + 
-  # #scale_shape_manual(name="HH Caste", breaks=c("GENERAL", "MINORITY", "OBC", "SCHEDULE CASTE", "SCHEDULE TRIBE", "Unknown"), values=c(1, 2, 3, 4, 5,6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
-  # #scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +
-  # scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
-  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-# ggsave(paste(prefix,'latent_positions_bycaste.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
-
-######################################################shaded by probabilty
+######################################################shaded by probabilty within each block
 nsamp <- nrow(mcmc_samples$beta)
 Z <- ldply(1:N, function(memb) {
   tab <- table(mcmc_samples$gamma[,memb])/nsamp
@@ -316,12 +248,6 @@ theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=e
 #theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
 ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 ######################################################shaded by probabilty
-
-
-
-
-
-
 
 
 
