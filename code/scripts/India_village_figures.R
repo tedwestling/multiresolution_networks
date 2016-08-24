@@ -13,8 +13,7 @@
 #set your working directory to the top level multiresolution_networks folder
 setwd("~/Dropbox/git_to_work/multiresolution_networks")
 source("header.R")
-#load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
-load("/Users/tylermccormick/Dropbox/git_to_work/village_59_mcmc_strongass_v1_postprocessed.Rdata")
+load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")
 
 #assuming here that we've done no burn-in on the sampling, so removing first 1k iterations
 nburn=c(1:(length(chain1$mu[,1])*.25))
@@ -296,10 +295,15 @@ for(nn in 1:length(bshape)){
 	bshape[nn]<-nshows[names(nshows)==as.character(ntmp)]
 }
 
+
+all_mean_df2_tr<-cbind(all_mean_df2_tr,as.factor(bshape))
+names(all_mean_df2_tr)[24]<-"bshape"
+rm(bshape)
+
 (g<-ggplot(all_mean_df2_tr) + 
   geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +
   guides(alpha=FALSE)+
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +
+  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),shape=bshape)) +
   guides(cex=FALSE)+ 
   #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + 
   theme_bw() +
@@ -307,7 +311,7 @@ for(nn in 1:length(bshape)){
   #labs(x="First latent dimension",y="Second latent dimension")+
   coord_fixed(ratio=1) + 
  scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+
+ scale_shape_manual(name="Block inclusion", values=c(16,17), labels=c("Single block", "Two Blocks"))+
 theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
 #theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
 ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
@@ -383,9 +387,24 @@ mean(mcmc_samples$beta[,4] < mcmc_samples$mu[,1])
 mean(mcmc_samples$beta[,5] < mcmc_samples$mu[,1])
 if(Khat==6){mean(mcmc_samples$beta[,6] < mcmc_samples$mu[,1])}
 
+mean(mcmc_samples$beta[,1] > mcmc_samples$mu[,1])
+mean(mcmc_samples$beta[,2] > mcmc_samples$mu[,1])
+mean(mcmc_samples$beta[,3] > mcmc_samples$mu[,1])
+mean(mcmc_samples$beta[,4] > mcmc_samples$mu[,1])
+mean(mcmc_samples$beta[,5] > mcmc_samples$mu[,1])
+if(Khat==6){mean(mcmc_samples$beta[,6] > mcmc_samples$mu[,1])}
+
 mean(log(mcmc_samples$sigma[,1]) < mcmc_samples$mu[,2])
 mean(log(mcmc_samples$sigma[,2]) < mcmc_samples$mu[,2])
 mean(log(mcmc_samples$sigma[,3]) < mcmc_samples$mu[,2])
 mean(log(mcmc_samples$sigma[,4]) < mcmc_samples$mu[,2])
 mean(log(mcmc_samples$sigma[,5]) < mcmc_samples$mu[,2])
 if(Khat==6){mean(log(mcmc_samples$sigma[,6]) < mcmc_samples$mu[,2])}
+
+mean(log(mcmc_samples$sigma[,1]) > mcmc_samples$mu[,2])
+mean(log(mcmc_samples$sigma[,2]) > mcmc_samples$mu[,2])
+mean(log(mcmc_samples$sigma[,3]) > mcmc_samples$mu[,2])
+mean(log(mcmc_samples$sigma[,4]) > mcmc_samples$mu[,2])
+mean(log(mcmc_samples$sigma[,5]) > mcmc_samples$mu[,2])
+if(Khat==6){mean(log(mcmc_samples$sigma[,6]) > mcmc_samples$mu[,2])}
+
