@@ -346,6 +346,7 @@ mean_block_params <- ddply(block_params, .(Block), summarise, beta=mean(beta), l
   geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +
   theme_bw() +
   theme(strip.background=element_blank()))
+
 ggsave(paste(prefix,'posterior_parameters.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
 
 ## Density plots of block-specific parameters ## NOT USED IN PAPER

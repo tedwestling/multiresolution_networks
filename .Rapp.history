@@ -1,3 +1,209 @@
+var(se.D[,1])
+var(se.DC[,1])
+var(se.DC[,2])
+var(se.E[,2])
+var(se.E[,3])
+var(se.DC[,3])
+var(se.Et[,3])
+var(se.Et[,3],na.rm=T)
+var(se.Et[,4])
+var(se.Et[,4],na.rm=T)
+var(se.DC[,4],na.rm=T)
+var(se.DC[,4],na.rm=T)which
+which(se.E>4)
+?which
+which(se.E>4,arr.ind=T)
+beta.hat[2,]
+beta.hat[3,]
+beta.hat[4,]
+beta.hat[18,]
+beta.hat[5,]
+which(p.e>4,arr.ind=T)[,1]
+which(p.e>4,arr.ind=T)
+which(se.E>4,arr.ind=T)
+unique(which(se.E>4,arr.ind=T)[,1])
+dim(p.e)
+length(p.e)
+dim(p.e)
+issues<-unique(which(se.E>4,arr.ind=T)[,1])#
+#now remove these problematic ones#
+p.e[issues,]<-rep(NA,4)#
+p.dc[issues,]<-rep(NA,4)
+p.e[2,]
+pdf( file=file.path(dir.out, paste('bymuni_allcoef_pval','pdf',sep='.')), width = 5, height = 5)#
+par(mar = c(3, 3, 3, 3), mgp=c(2,.5,0), cex.lab=1.2, cex.axis=1.) #
+x.range <- range(p.dc,na.rm=T)+.018#
+y.range <- range(p.e,na.rm=T)+.018#
+plot(p.e[,1]~p.dc[,1], cex=1.2, lwd=2, xlab="Dyadic clustering p-value", ylab="Exchangeable p-value", pch=16, col=col.vec[1], xlim=x.range, ylim=y.range)#
+pchvec=c(16,17,3,4)#
+for (i in 2:p.tot){#
+  points(p.e[,i]~p.dc[,i], pch=pchvec[i], col=col.vec[i], cex=1.2, lwd=2)#
+}#
+abline(v=.05, lty=2)#
+abline(h=.05, lty=2)#
+abline(0,1, lty=3)#
+legend(legend.loc, beta.names, pch = c(1:6), col=col.vec, #
+       bty='n', horiz=F, cex = 1.1, pt.cex = 2*rep(1,6))#
+dev.off()
+pdf( file=file.path(dir.out, paste('bymuni_b1_pval','pdf',sep='.')), width = 5, height = 5)#
+par(mar = c(3, 3, 3, 3), mgp=c(2,.5,0), cex.lab=1.2, cex.axis=1) #
+x.range <- range(p.dc,na.rm=T)+.018#
+y.range <- range(p.e,na.rm=T)+.018#
+plot(p.e[,1]~p.dc[,1], cex=1.2, lwd=2, xlab="Dyadic clustering p-value", ylab="Exchangeable p-value", pch=16, col=col.vec[1], xlim=x.range, ylim=y.range,main="Intercept",cex.main=1.5)#
+abline(v=.05, lty=2)#
+abline(h=.05, lty=2)#
+abline(0,1, lty=3)#
+#legend(legend.loc, beta.names, pch = c(1:6), col=col.vec, #
+ #      bty='n', horiz=F, cex = 1.1, pt.cex = 2*rep(1,6))#
+dev.off()#
+#
+pdf( file=file.path(dir.out, paste('bymuni_b2_pval','pdf',sep='.')), width = 5, height = 5)#
+par(mar = c(3, 3, 3, 3), mgp=c(2,.5,0), cex.lab=1.2, cex.axis=1) #
+x.range <- range(p.dc,na.rm=T)+.018#
+y.range <- range(p.e,na.rm=T)+.018#
+plot(p.e[,2]~p.dc[,2], cex=1.2, lwd=2, xlab="Dyadic clustering p-value", ylab="Exchangeable p-value", pch=17, col=col.vec[2], xlim=x.range, ylim=y.range,main="Difference in risk preference",cex.main=1.5)#
+abline(v=.05, lty=2)#
+abline(h=.05, lty=2)#
+abline(0,1, lty=3)#
+#legend(legend.loc, beta.names, pch = c(1:6), col=col.vec, #
+#       bty='n', horiz=F, cex = 1.1, pt.cex = 2*rep(1,6))#
+dev.off()#
+pdf( file=file.path(dir.out, paste('bymuni_b3_pval','pdf',sep='.')), width = 5, height = 5)#
+par(mar = c(3, 3, 3, 3), mgp=c(2,.5,0), cex.lab=1.2, cex.axis=1) #
+x.range <- range(p.dc,na.rm=T)+.018#
+y.range <- range(p.e,na.rm=T)+.018#
+plot(p.e[,3]~p.dc[,3], cex=1.2, lwd=2, xlab="Dyadic clustering p-value", ylab="Exchangeable p-value", pch=3, col=col.vec[3], xlim=x.range, ylim=y.range,main="Family/Friend",cex.main=1.5)#
+abline(v=.05, lty=2)#
+abline(h=.05, lty=2)#
+abline(0,1, lty=3)#
+#legend(legend.loc, beta.names, pch = c(1:6), col=col.vec, #
+  #     bty='n', horiz=F, cex = 1.1, pt.cex = 2*rep(1,6))#
+dev.off()#
+pdf( file=file.path(dir.out, paste('bymuni_b4_pval','pdf',sep='.')), width = 5, height = 5)#
+par(mar = c(3, 3, 3, 3), mgp=c(2,.5,0), cex.lab=1.2, cex.axis=1) #
+x.range <- range(p.dc,na.rm=T)+.018#
+y.range <- range(p.e,na.rm=T)+.018#
+plot(p.e[,4]~p.dc[,4], cex=1.2, lwd=2, xlab="Dyadic clustering p-value", ylab="Exchangeable p-value", pch=4, col=col.vec[4], xlim=x.range, ylim=y.range,main="Interaction",cex.main=1.5)#
+abline(v=.05, lty=2)#
+abline(h=.05, lty=2)#
+abline(0,1, lty=3)#
+#legend(legend.loc, beta.names, pch = c(1:6), col=col.vec, #
+ #      bty='n', horiz=F, cex = 1.1, pt.cex = 2*rep(1,6))#
+dev.off()
+se.Et=se.E#
+se.Et[issues,]<-rep(NA,4)#
+se.DCt=se.DC#
+se.DCt[issues,]<-rep(NA,4)
+var(se.Et[,1],na.rm=T)
+var(se.DCt[,1],na.rm=T)
+var(se.DCt[,2],na.rm=T)
+var(se.Et[,2],na.rm=T)
+var(se.Et[,3],na.rm=T)
+var(se.DCt[,3],na.rm=T)
+var(se.Et[,4],na.rm=T)
+var(se.DCt[,4],na.rm=T)
+boxplot(cbind(se.Et[,1],se.DCt[,1],se.Et[,2],se.DCt[,2],se.Et[,3],se.DCt[,3],se.Et[,4],se.DCt[,4]))
+which.max(se.Et,arr.ind=T)
+which(max(se.Et,na.rm=T),arr.ind=T)
+max(se.Et,na.rm=T)
+which(se.Et>3.66,arr.ind=T)
+adata
+adata=read.csv("/Users/tylermccormick/Dropbox/netreg_villages/AEJApp-2010-0118data/AttanasioEtAl2011Dyadic_processed.csv")#
+source("/Users/tylermccormick/Dropbox/netreg_villages/160128_function_file_india_tm.R")
+adata=read.csv("/Users/tylermccormick/Dropbox/netreg_villages/AEJApp-2010-0118data/AttanasioEtAl2011Dyadic_processed.csv")
+Yin=Yin[which(adata$municode==13)]#
+Xin=Xin[which(adata$municode==13),]
+aglm=glm(samegroup~difchoice1+frfamcl+dcfrfamcl,data=adata,family=binomial("logit"))#
+Xin=model.matrix(aglm)#
+Yin=adata$samegroup#
+Yin=Yin[which(adata$municode==13)]#
+Xin=Xin[which(adata$municode==13),]
+dim(Xin)
+dim(Yin)
+length(Yin)
+gfit=glm(Yin~Xin-1,family=binomial(link="logit"))
+gfit
+summary(gfit)
+se.Et[13,]
+se.DC[13,]
+colSums(se.Et-s.DCt,na.rm=T)
+colSums(se.Et-se.DCt,na.rm=T)
+colSums(se.Et,na.rm=T)
+colSums(se.DCt,na.rm=T)
+boxplot(se.Et[,1]-se.DCt[,1],se.Et[,2]-se.DCt[,2])
+,se.Et[,2]-se.DCt[,2]
+boxplot(se.Et[,1]-se.DCt[,1],se.Et[,2]-se.DCt[,2],se.Et[,3]-se.DCt[,3],se.Et[,4]-se.DCt[,4])
+abline(h=0,col='red')
+boxplot((se.Et[,1]-se.DCt[,1])/se.DCt[,1],se.Et[,2]-se.DCt[,2],se.Et[,3]-se.DCt[,3],se.Et[,4]-se.DCt[,4])
+boxplot((se.Et[,1]-se.DCt[,1])/se.DCt[,1],(se.Et[,2]-se.DCt[,2])/se.DCt[,2],(se.Et[,3]-se.DCt[,3])/se.DCt[,3],(se.Et[,4]-se.DCt[,4])/se.DCt[,4])
+abline(h=0,col="red")
+summary(se.Et[,1])
+summary(se.DCt[,1])
+?boxplot
+boxplot((se.Et[,1]-se.DCt[,1])/se.DCt[,1],(se.Et[,2]-se.DCt[,2])/se.DCt[,2],(se.Et[,3]-se.DCt[,3])/se.DCt[,3],(se.Et[,4]-se.DCt[,4])/se.DCt[,4],names=c("Intercept","Risk preferences","Family/friend","Interaction"),main="Exchangeable SE-Dyad SE/Dyad SE")
+pdf( file=file.path(dir.out, paste('difbp','pdf',sep='.')), width = 8, height = 5)#
+boxplot((se.Et[,1]-se.DCt[,1])/se.DCt[,1],(se.Et[,2]-se.DCt[,2])/se.DCt[,2],(se.Et[,3]-se.DCt[,3])/se.DCt[,3],(se.Et[,4]-se.DCt[,4])/se.DCt[,4],names=c("Intercept","Risk preferences","Family/friend","Interaction"),main="(Exchangeable SE-Dyad SE)/Dyad SE")#
+abline(h=0,col='red')#
+dev.off()
+head(X.in)
+head(Xin)
+Xin[,3]
+sum(Xin[,3])
+dim(Xin)
+sum(Se.Et>3)
+Yin[Xin[,3]==1]
+sum(Yin[Xin[,3]==1])
+sum(Yin)
+sum(se.Et>3)
+sum(se.Et>3,na.rm=T)
+sum(se.Et>2,na.rm=T)
+sum(se.Et>1.5,na.rm=T)
+sum(se.Et>1.2,na.rm=T)
+sum(se.Et>1,na.rm=T)
+sum(se.DCt>1,na.rm=T)
+sum(se.DCt>.75,na.rm=T)
+sum(se.Et>.75,na.rm=T)
+library(InterVa)
+library(InterVA4)
+library(InterVa4)
+install.packages("InterVA4")
+?InterVA4
+??InterVA4
+help(interva)
+??interva
+library(InterVA4)
+intsall.packages("InSilicoVA")
+install.packages("InSilicoVA")
+library(InSilicoVA)
+library(InterVA4)
+library(InSilicoVA)
+?InSilicoVA
+??InSilicoVA
+?insilico
+?interva
+?interva4
+?interVA
+??interVA
+library(foreign)#
+library(arm)#
+wdata=read.dta("/Users/tylermccormick/Dropbox/garment workers and garment factories/garments data monthly wage observations with grievances.dta")
+names(wdata)
+facconditions=tapply(wdata$goodconditions,wdata$factory,mean)
+length(facconditions)
+wdata$fromurban
+wdata$fromurban[wdata$hr21==26|wdata$hr21==33]<-1
+fconditions=tapply(wdata$goodconditions,wdata$factory,mean)
+facconditions=rep(NA,nrow(wdata))
+fconditions=tapply(wdata$goodconditions,wdata$factory,mean)
+table(wdata$factory)
+length(table(wdata$factory))
+names(table(wdata$factory))
+a=match(wdata$factory,names(table(wdata$factory)))
+length(a)
+a[1:10]
+max(a)
+for(ii in 1:length(facconditions)){facconditions[ii]<-fconditions[match(wdata$factory,names(table(wdata$factory)))[ii]]}
+for(ii in 1:length(facconditions)){facconditions[ii]<-mean(wdata$goodconditions[wdata$factory==ii])}
 lm1<-lm(facconditions~wdata$migrant)
 lm1<-lm(facconditions~migrant)
 ls()
@@ -1504,498 +1710,6 @@ nn  <- 5   # number of data series#
     dev.off()#
   }#
   }
-?data.frame
-######################################################shaded by probabilty#
-nsamp <- nrow(mcmc_samples$beta)#
-Z <- ldply(1:N, function(memb) {#
-  tab <- table(mcmc_samples$gamma[,memb])/nsamp#
-  this_blocks <- as.numeric(names(tab)[tab > .00017]) ### has appeared in a block at least twice .00017#
-#print(this_blocks)#
-ldply(this_blocks, function(block) {#
-    df <- data.frame(mcmc_samples$Z[mcmc_samples$gamma[,memb] == block,memb,])#
-    names(df) <- paste0("Z", 1:2)#
-    df$block <- block#
-    df$node <- memb#
-    return(df)#
-  })#
-})
-# ################################################################################
-# # Multi-resolution blockmodel#
-# ##
-# # file: indian_village_figures.R#
-# # #
-# # This file makes the plots for the paper.  Assuming that we have already run India_village_estimation.R#
-# ## and have results and have post-processed them with India_village_postprocess.R.  #
-# ##
-# ##
-# # Author: tedwestling#
-# ################################################################################
- rm(list = ls())#
-#set your working directory to the top level multiresolution_networks folder#
-setwd("~/Dropbox/git_to_work/multiresolution_networks")#
-source("header.R")#
-#load("data/results/village_59_mcmc_strongass_v1_postprocessed.Rdata")#
-load("/Users/tylermccormick/Dropbox/git_to_work/village_59_mcmc_strongass_v1_postprocessed.Rdata")#
-#
-#assuming here that we've done no burn-in on the sampling, so removing first 1k iterations#
-nburn=c(1:(length(chain1$mu[,1])*.25))#
-#
-#all the samples combined together for analysis later#
-mcmc_samples <- list(beta=rbind(mcmc_samplesc1$beta[-nburn,], mcmc_samplesc2$beta[-nburn,],mcmc_samplesc3$beta[-nburn,], mcmc_samplesc4$beta[-nburn,]),#
-                sigma=rbind(mcmc_samplesc1$sigma[-nburn,], mcmc_samplesc2$sigma[-nburn,], mcmc_samplesc3$sigma[-nburn,], mcmc_samplesc4$sigma[-nburn,]),#
-                 pi=rbind(mcmc_samplesc1$pi[-nburn,], mcmc_samplesc2$pi[-nburn,], mcmc_samplesc3$pi[-nburn,], mcmc_samplesc4$pi[-nburn,]),#
-                 mu=rbind(mcmc_samplesc1$mu[-nburn,], mcmc_samplesc2$mu[-nburn,], mcmc_samplesc3$mu[-nburn,], mcmc_samplesc4$mu[-nburn,]),#
-                 Sigma=abind(mcmc_samplesc1$Sigma[-nburn,,], mcmc_samplesc2$Sigma[-nburn,,], mcmc_samplesc3$Sigma[-nburn,,], mcmc_samplesc4$Sigma[-nburn,,], along=1),#
-                 B=abind(mcmc_samplesc1$B[-nburn,,], mcmc_samplesc2$B[-nburn,,], mcmc_samplesc3$B[-nburn,,], mcmc_samplesc4$B[-nburn,,], along=1),#
-                 Z=abind(mcmc_samplesc1$Z[-nburn,,], mcmc_samplesc2$Z[-nburn,,], mcmc_samplesc3$Z[-nburn,,], mcmc_samplesc4$Z[-nburn,,], along=1),#
-                 gamma=rbind(mcmc_samplesc1$gamma[-nburn,], mcmc_samplesc2$gamma[-nburn,], mcmc_samplesc3$gamma[-nburn,], mcmc_samplesc4$gamma[-nburn,]))#
-#
-#now do some mcmc checks with the "monitor" function from stan#
-#note that this assumes you have at least two chains#
-#separate arrays for analyzing convergence#
-#note the first argument takes the form iterations, chains, paramters#
-require(rstan)#
-#set this based on the number of chains you've run#
-howmanychains=4#
-beta_array=array(dim=c(dim(mcmc_samplesc1$beta)[1],howmanychains,dim(mcmc_samplesc1$beta)[2]))#
-beta_array[,1,]<-mcmc_samplesc1$beta#
-beta_array[,2,]<-mcmc_samplesc2$beta#
-beta_array[,3,]<-mcmc_samplesc3$beta#
-beta_array[,4,]<-mcmc_samplesc4$beta#
-#
-sigma_array=array(dim=c(dim(mcmc_samplesc1$sigma)[1],howmanychains,dim(mcmc_samplesc1$sigma)[2]))#
-sigma_array[,1,]<-mcmc_samplesc1$sigma#
-sigma_array[,2,]<-mcmc_samplesc2$sigma#
-sigma_array[,3,]<-mcmc_samplesc3$sigma#
-sigma_array[,4,]<-mcmc_samplesc4$sigma#
-pi_array=array(dim=c(dim(mcmc_samplesc1$pi)[1],howmanychains,dim(mcmc_samplesc1$pi)[2]))#
-pi_array[,1,]<-mcmc_samplesc1$pi#
-pi_array[,2,]<-mcmc_samplesc2$pi#
-pi_array[,3,]<-mcmc_samplesc3$pi#
-pi_array[,4,]<-mcmc_samplesc4$pi#
-#
-mu_array=array(dim=c(dim(mcmc_samplesc1$mu)[1],howmanychains,dim(mcmc_samplesc1$mu)[2]))#
-mu_array[,1,]<-mcmc_samplesc1$mu#
-mu_array[,2,]<-mcmc_samplesc2$mu#
-mu_array[,3,]<-mcmc_samplesc3$mu#
-mu_array[,4,]<-mcmc_samplesc4$mu#
-#
-Sigma_array=array(dim=c(dim(mcmc_samplesc1$Sigma)[1],howmanychains,4))#
-Sigma_array[,1,]<-matrix(mcmc_samplesc1$Sigma,dim(mcmc_samplesc1$Sigma)[1],4)#
-Sigma_array[,2,]<-matrix(mcmc_samplesc2$Sigma,dim(mcmc_samplesc2$Sigma)[1],4)#
-Sigma_array[,3,]<-matrix(mcmc_samplesc3$Sigma,dim(mcmc_samplesc3$Sigma)[1],4)#
-Sigma_array[,4,]<-matrix(mcmc_samplesc4$Sigma,dim(mcmc_samplesc4$Sigma)[1],4)#
-#note there are 30 for 6 blocks (6*6-6 on the diagonal)#
-#need to change if you're using fewer blocks#
-B_array=array(dim=c(dim(mcmc_samplesc1$B)[1],howmanychains,((Khat*Khat)-Khat)))#
-B_array[,1,]<-matrix(mcmc_samplesc1$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc1$B)[1],((Khat*Khat)-Khat))#
-B_array[,2,]<-matrix(mcmc_samplesc2$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc2$B)[1],((Khat*Khat)-Khat))#
-B_array[,3,]<-matrix(mcmc_samplesc3$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc3$B)[1],((Khat*Khat)-Khat))#
-B_array[,4,]<-matrix(mcmc_samplesc4$B[is.na(mcmc_samplesc1$B)==F],dim(mcmc_samplesc4$B)[1],((Khat*Khat)-Khat))#
-#
-gamma_array=array(dim=c(dim(mcmc_samplesc1$gamma)[1],howmanychains,dim(mcmc_samplesc1$gamma)[2]))#
-gamma_array[,1,]<-mcmc_samplesc1$gamma#
-gamma_array[,2,]<-mcmc_samplesc2$gamma#
-gamma_array[,3,]<-mcmc_samplesc3$gamma#
-gamma_array[,4,]<-mcmc_samplesc4$gamma#
-#
-#monitor(B_array)#
-#monitor(Sigma_array)#
-#monitor(mu_array)#
-#monitor(pi_array)#
-#monitor(sigma_array)#
-#monitor(beta_array)#
-#
-prefix="plots/"#
-###make trace plots#
-#mu#
-pdf(file=paste(prefix,"mutrace.pdf",sep=''),height=10,width=6)#
-par(mfrow=c(2,1))#
-matplot(mu_array[-c(1:max(nburn)),,1],type='l',main="Traceplot for mu1",xlab="iteration",ylab="mu1")#
-matplot(mu_array[-c(1:max(nburn)),,2],type='l',main="Traceplot for mu2",xlab="iteration",ylab="mu2")#
-dev.off()#
-pdf(file=paste(prefix,"betatrace.pdf",sep=''),height=10,width=6)#
-par(mfrow=c(3,2))#
-matplot(beta_array[-c(1:max(nburn)),,1],type='l',main="Traceplot for beta1",xlab="iteration",ylab="beta1")#
-matplot(beta_array[-c(1:max(nburn)),,2],type='l',main="Traceplot for beta2",xlab="iteration",ylab="beta2")#
-matplot(beta_array[-c(1:max(nburn)),,3],type='l',main="Traceplot for beta3",xlab="iteration",ylab="beta3")#
-matplot(beta_array[-c(1:max(nburn)),,4],type='l',main="Traceplot for beta4",xlab="iteration",ylab="beta4")#
-matplot(beta_array[-c(1:max(nburn)),,5],type='l',main="Traceplot for beta5",xlab="iteration",ylab="beta5")#
-if(Khat==6){matplot(beta_array[-c(1:max(nburn)),,6],type='l',main="Traceplot for beta6",xlab="iteration",ylab="beta6")}#
-dev.off()#
-#
-pdf(file=paste(prefix,"sigmatrace.pdf",sep=''),height=10,width=6)#
-par(mfrow=c(3,2))#
-matplot(sigma_array[-c(1:max(nburn)),,1],type='l',main="Traceplot for sigma1",xlab="iteration",ylab="sigma1")#
-matplot(sigma_array[-c(1:max(nburn)),,2],type='l',main="Traceplot for sigma2",xlab="iteration",ylab="sigma2")#
-matplot(sigma_array[-c(1:max(nburn)),,3],type='l',main="Traceplot for sigma3",xlab="iteration",ylab="sigma3")#
-matplot(sigma_array[-c(1:max(nburn)),,4],type='l',main="Traceplot for sigma4",xlab="iteration",ylab="sigma4")#
-matplot(sigma_array[-c(1:max(nburn)),,5],type='l',main="Traceplot for sigma5",xlab="iteration",ylab="sigma5")#
-if(Khat==6){matplot(sigma_array[-c(1:max(nburn)),,6],type='l',main="Traceplot for sigma6",xlab="iteration",ylab="sigma6")}#
-dev.off()#
-pdf(file=paste(prefix,"pitrace.pdf",sep=''),height=10,width=6)#
-par(mfrow=c(3,2))#
-matplot(pi_array[-c(1:max(nburn)),,1],type='l',main="Traceplot for pi1",xlab="iteration",ylab="pi1")#
-matplot(pi_array[-c(1:max(nburn)),,2],type='l',main="Traceplot for pi2",xlab="iteration",ylab="pi2")#
-matplot(pi_array[-c(1:max(nburn)),,3],type='l',main="Traceplot for pi3",xlab="iteration",ylab="pi3")#
-matplot(pi_array[-c(1:max(nburn)),,4],type='l',main="Traceplot for pi4",xlab="iteration",ylab="pi4")#
-matplot(pi_array[-c(1:max(nburn)),,5],type='l',main="Traceplot for pi5",xlab="iteration",ylab="pi5")#
-if(Khat==6){matplot(pi_array[-c(1:max(nburn)),,6],type='l',main="Traceplot for pi6",xlab="iteration",ylab="pi6")}#
-dev.off()#
-pdf(file=paste(prefix,"Sigmatrace.pdf",sep=''),height=10,width=6)#
-par(mfrow=c(2,2))#
-matplot(Sigma_array[-c(1:max(nburn)),,1],type='l',main="Traceplot for Sigma1",xlab="iteration",ylab="Sigma1")#
-matplot(Sigma_array[-c(1:max(nburn)),,2],type='l',main="Traceplot for Sigma2",xlab="iteration",ylab="Sigma2")#
-matplot(Sigma_array[-c(1:max(nburn)),,3],type='l',main="Traceplot for Sigma3",xlab="iteration",ylab="Sigma3")#
-matplot(Sigma_array[-c(1:max(nburn)),,4],type='l',main="Traceplot for Sigma4",xlab="iteration",ylab="Sigma4")#
-dev.off()#
-#
-set.seed(47676728)#
-# CODE FOR COMPUTING JOINT POSTERIOR MODE:#
-gamma_vecs <- apply(mcmc_samples$gamma,1,paste0, collapse='.')#
-gamma_tab <- table(gamma_vecs)#
-head(sort(gamma_tab))#
-# If the maximum of gamma_tab is 1 then no membership appeared more than once and the marginal mode should be used instead#
-gamma_mode <- names(gamma_tab)[which.max(gamma_tab)]#
-joint_mode <- as.numeric(strsplit(gamma_mode, ".", fixed=TRUE)[[1]])#
-#
-# CODE FOR COMPUTING MARGINAL POSTERIOR MODES:#
-marg_mode <- as.numeric(apply(mcmc_samples$gamma, 2, function(memb) names(table(memb))[which.max(table(memb))]))#
-#
-# CHOOSE ONE FOR DISPLAYING POSITIONS#
-gamma_mode <- marg_mode#
-#
-# Plot blocked adjacency matrix - Figure 1#
-png(paste(prefix,'blocked_adjacency.png',sep=''), width=2, height=2, units='in', res=300)#
-plot_blocked_matrix(network, gamma_mode, sort=FALSE)#
-dev.off()#
-#
-# ## Make dataset of latent positions#
-# nsamp <- nrow(mcmc_samples$beta)#
-# Z <- ldply(1:N, function(memb) {#
-  # all <- data.frame(mcmc_samples$Z[,memb,])#
-  # names(all) <- paste0("Z", 1:2)#
-  # all$node <- memb#
-  # all$sample <- 1:nsamp#
-  # all$block <- mcmc_samples$gamma[,memb]#
-  # return(all)#
-# })#
-#
-# all_mean_df <- NULL#
-# all_edge_df <- NULL#
-# for(k in 1:K) {#
-  # nodes_in <- which(gamma_mode == k)#
-  # edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  # samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-  # mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2)))#
-  # mean_df$Block <- k#
-  # all_mean_df <- rbind(all_mean_df, mean_df)#
-  # edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]])#
-  # if(nrow(edges) != 0) edge_df$Block <- k#
-  # all_edge_df <- rbind(all_edge_df, edge_df)#
-# }#
-# #
-# ggplot(all_mean_df) + geom_point(aes(Z1, Z2)) + geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend))+ theme_bw() + facet_wrap(~block, nrow=floor(sqrt(K)), scales='free') +coord_fixed(ratio=1)#
-#
-#hhold <- read.dta('data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta')#
-hhold<-read.dta("/Users/tylermccormick/Dropbox/git_to_work/slurm/data/indian_village_raw/2. Demographics and Outcomes/household_characteristics.dta")#
-hhold <- subset(hhold, village==vilno)#
-#
-# ###set up for plot by religion#
-# hhold$hohreligion <- as.character(hhold$hohreligion)#
-# names(hhold)[3] <- "node"#
-# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )#
-# all_mean_df2$hohreligion[is.na(all_mean_df2$hohreligion)] <- "Unknown"#
-# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"#
-#
-# # Plot of latent positions - Figure 3#
-# (g <- ggplot(all_mean_df2) + #
-  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + #
-  # geom_point(aes(Z1, Z2, color=as.factor(leader), shape=hohreligion)) + #
-  # theme_bw() +#
-  # facet_wrap(~Block, nrow=2, scales='free') +#
-  # coord_fixed(ratio=1) + #
-  # scale_shape_manual(name="HH Religion", breaks=c("HINDUISM", "ISLAM", "CHRISTIANITY", "Unknown"), values=c(1, 2, 3, 4), labels=c("Hindu", "Muslim", "Christian", "Unknown")) +#
-  # scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +#
-  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-# ggsave(paste(prefix,'latent_positions_byrel.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-# ###set up for plot by caste#
-# hhold$castesubcaste <- as.character(hhold$castesubcaste)#
-# names(hhold)[3] <- "node"#
-# #merge the covariate information with the block and latent positions#
-# all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )#
-# all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"#
-# all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"#
-#
-# # Plot of latent positions - Figure 3#
-# (g <- ggplot(all_mean_df2) + #
-  # geom_segment(data=all_edge_df, aes(x=x, xend=xend, y=y, yend=yend), color='grey') + #
-  # geom_point(aes(Z1, Z2, color=as.factor(castesubcaste), shape=castesubcaste)) + #
-  # theme_bw() +#
-  # facet_wrap(~Block, nrow=2, scales='free') +#
-  # coord_fixed(ratio=1) + #
-  # #scale_shape_manual(name="HH Caste", breaks=c("GENERAL", "MINORITY", "OBC", "SCHEDULE CASTE", "SCHEDULE TRIBE", "Unknown"), values=c(1, 2, 3, 4, 5,6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
-  # #scale_color_manual(name="HH Status", values=c("black", "red", "blue"), labels=c("Non-leader", "Leader", "Unknown")) +#
-  # scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
-  # theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-# ggsave(paste(prefix,'latent_positions_bycaste.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-#
-######################################################shaded by probabilty#
-nsamp <- nrow(mcmc_samples$beta)#
-Z <- ldply(1:N, function(memb) {#
-  tab <- table(mcmc_samples$gamma[,memb])/nsamp#
-  this_blocks <- as.numeric(names(tab)[tab > .00017]) ### has appeared in a block at least twice .00017#
-#print(this_blocks)#
-ldply(this_blocks, function(block) {#
-    df <- data.frame(mcmc_samples$Z[mcmc_samples$gamma[,memb] == block,memb,])#
-    names(df) <- paste0("Z", 1:2)#
-    df$block <- block#
-    df$node <- memb#
-    return(df)#
-  })#
-})#
-#
-all_mean_df <- NULL#
-all_edge_df <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(Z$node[Z$block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-####in the next line ted's code had 10000, changed to nsamp.  NEED TO DOUBLE CHECK THIS!!#
-  mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
-  mean_df$Block <- k#
-  all_mean_df <- rbind(all_mean_df, mean_df)#
-  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2)#
-  if(nrow(edges) != 0) edge_df$Block <- k#
-  all_edge_df <- rbind(all_edge_df, edge_df)#
-}#
-#
-###set up for plot by caste#
-hhold$castesubcaste <- as.character(hhold$castesubcaste)#
-names(hhold)[3] <- "node"#
-#merge the covariate information with the block and latent positions#
-all_mean_df2 <- merge(hhold, all_mean_df, all.y = TRUE )#
-all_mean_df2$castesubcaste[is.na(all_mean_df2$castesubcaste)] <- "Unknown"#
-all_mean_df2$leader[is.na(all_mean_df2$leader)] <- "Unknown"#
-#
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0,]#
-all_edge_df_tr=all_edge_df[all_edge_df$prob>0,]#
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-######################################################shaded by probabilty#
-## Posteriors of global parameters#
-hpd_mu <- HPDregionplot(mcmc(mcmc_samples$mu))#
-hpd <- data.frame(x=hpd_mu[[1]]$x, y=hpd_mu[[1]]$y)#
-#
-hpd_blocks <- NULL#
-for(k in 1:K) {#
-  hpd_k <- HPDregionplot(mcmc(cbind(mcmc_samples$beta[,k], log(mcmc_samples$sigma[,k]))))#
-  for(i in 1:length(hpd_k)) hpd_blocks <- rbind(hpd_blocks, data.frame(x=hpd_k[[i]]$x, y=hpd_k[[i]]$y, Block=paste(k), group=paste(k, i)))#
-}#
-#
-block_params <- ldply(1:K, function(k) data.frame(beta=mcmc_samples$beta[,k], logsigma=log(mcmc_samples$sigma[,k]), Block=k))#
-mean_block_params <- ddply(block_params, .(Block), summarise, beta=mean(beta), logsigma=mean(logsigma))#
-#
-## HPD of block-level parameters and global mean parameters - Figure 2#
-#
-(g <- ggplot(hpd_blocks) +#
-  geom_path(aes(x=x, y=y, group=group)) +#
-  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
-  xlab(expression(beta)) +#
-  ylab(expression(log(sigma))) +#
-  facet_wrap(~Block, nrow=2) +#
-  geom_path(data=hpd, aes(x,y), linetype=2) +#
-  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
-  theme_bw() +#
-  theme(strip.background=element_blank()))#
-ggsave(paste(prefix,'posterior_parameters.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-#
-## Density plots of block-specific parameters ## NOT USED IN PAPER#
-#
-# ggplot(block_params) +#
-  # geom_density2d(aes(beta, logsigma)) +#
-  # geom_point(data=mean_block_params, aes(beta, logsigma), color='red') +#
-  # facet_wrap(~Block, nrow=2) +#
-  # xlab(expression(beta)) +#
-  # ylab(expression(log(sigma))) +#
-  # theme_bw() +#
-  # geom_density2d(data=data.frame(beta=mcmc_samples$mu[,1], logsigma=mcmc_samples$mu[,2]), aes(beta, logsigma), color='black') +#
-  # theme(strip.background=element_blank())#
-# ggsave(paste(prefix,'posterior_parameters2.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-#
-# ## Global mean samples and posterior density ## NOT USED IN PAPER#
-#
-# ggplot(data.frame(mcmc_samples$mu)) +#
-  # geom_point(data=data.frame(mcmc_samples$mu[sample(1:nrow(mcmc_samples$mu), 1000, replace=FALSE),]), aes(X1, X2), alpha=.5) +#
-  # geom_density2d(aes(X1, X2)) +#
-  # geom_path(data=hpd, aes(x,y), col='red') +#
-  # xlab(expression(mu[1])) +#
-  # ylab(expression(mu[2])) +#
-  # geom_point(x=mean(mcmc_samples$mu[,1]), y=mean(mcmc_samples$mu[,2]), col='red') +#
-  # theme_bw()#
-# ggsave(paste(prefix,'posterior_parameters3.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-#
-## Computations presented in paper#
-#
-mean(mcmc_samples$beta[,1] < mcmc_samples$mu[,1])#
-mean(mcmc_samples$beta[,2] < mcmc_samples$mu[,1])#
-mean(mcmc_samples$beta[,3] < mcmc_samples$mu[,1])#
-mean(mcmc_samples$beta[,4] < mcmc_samples$mu[,1])#
-mean(mcmc_samples$beta[,5] < mcmc_samples$mu[,1])#
-if(Khat==6){mean(mcmc_samples$beta[,6] < mcmc_samples$mu[,1])}#
-#
-mean(log(mcmc_samples$sigma[,1]) < mcmc_samples$mu[,2])#
-mean(log(mcmc_samples$sigma[,2]) < mcmc_samples$mu[,2])#
-mean(log(mcmc_samples$sigma[,3]) < mcmc_samples$mu[,2])#
-mean(log(mcmc_samples$sigma[,4]) < mcmc_samples$mu[,2])#
-mean(log(mcmc_samples$sigma[,5]) < mcmc_samples$mu[,2])#
-if(Khat==6){mean(log(mcmc_samples$sigma[,6]) < mcmc_samples$mu[,2])}
-head(all_edge_df)
-all_mean_df <- NULL#
-all_edge_df <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(Z$node[Z$block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-####in the next line ted's code had 10000, changed to nsamp.  NEED TO DOUBLE CHECK THIS!!#
-  mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
-  mean_df$Block <- k#
-  all_mean_df <- rbind(all_mean_df, mean_df)#
-  edge_df <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df$Block <- k#
-  all_edge_df <- rbind(all_edge_df, edge_df)#
-}
-head(all_edge_df)
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]
-all_mean_df2_tr
-head(all_mean_df2_tr)
-###truncate to only plot nodes with >40pct post prob of being in block#
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}
-k=1
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL
-nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$block == k])
-nodes_in
-dim(all_mean_df2_tr)
-all_mean_df2_tr
-nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
-edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-edges
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
-######################################################shaded by probabilty
-k=1
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]
-all_mean_df2_tr
-all_mean_df2_tr$nodes
-all_mean_df2_tr$node
-unique(all_mean_df2_tr$node)
-nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
-nodes_in
-which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-network
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}
-dim(all_edge_df_tr)
-dim(all_edge_df)
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-edges[,1]
-dim(edges)
-###truncate to only plot nodes with >40pct post prob of being in block#
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-##edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-	mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
- edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-dim(all_edge_df)
-head(all_edge_df)
-all_mean_df2_tr
 # ################################################################################
 # # Multi-resolution blockmodel#
 # ##
@@ -2261,8 +1975,8 @@ all_edge_df_tr <- NULL#
 for(k in 1:K) {#
   nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
   edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
+  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
+#edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
 	mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
  edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
   if(nrow(edges) != 0) edge_df_tr$Block <- k#
@@ -2271,9 +1985,12 @@ edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z
 #
 #set up indicators of how many blocks a person is in#
 bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3#
+nshows=table(all_mean_df2_tr$node)#
+for(nn in 1:length(bshape)){#
+	ntmp=all_mean_df2_tr$node[nn]#
+	bshape[nn]<-nshows[names(nshows)==as.character(ntmp)]#
+}#
+#
 (g<-ggplot(all_mean_df2_tr) + #
   geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
   guides(alpha=FALSE)+#
@@ -2282,10 +1999,12 @@ bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==
   #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
   theme_bw() +#
   facet_wrap(~Block, nrow=2, scales='free') +#
+  #labs(x="First latent dimension",y="Second latent dimension")+#
   coord_fixed(ratio=1) + #
  scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
  scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
+theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
+#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
 ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)#
 ######################################################shaded by probabilty#
 ## Posteriors of global parameters#
@@ -2355,596 +2074,137 @@ mean(log(mcmc_samples$sigma[,3]) < mcmc_samples$mu[,2])#
 mean(log(mcmc_samples$sigma[,4]) < mcmc_samples$mu[,2])#
 mean(log(mcmc_samples$sigma[,5]) < mcmc_samples$mu[,2])#
 if(Khat==6){mean(log(mcmc_samples$sigma[,6]) < mcmc_samples$mu[,2])}
-k=1
-unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
-dim(network)
-which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-head(network)
-k=2
-nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
-which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)
-unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])
-network[11,55]
-dim(network)
-network[132,155]
-names(network)
-head(network)
-all_edge_df_tr
-head(all_edge_df_tr)
-edges
-edges[,1]
-edges[,2]
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-	#mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
- #edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}#
-#
-#set up indicators of how many blocks a person is in#
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-###truncate to only plot nodes with >40pct post prob of being in block#
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  #samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-#edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-	#mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
- edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}#
-#
-#set up indicators of how many blocks a person is in#
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-#edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-	mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
- edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}#
-#
-#set up indicators of how many blocks a person is in#
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F]<-3#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
-bshape
-table(all_mean_df2_tr$node)
-nrow(all_mean_df2_tr)
-which(table(all_mean_df2_tr$node)==1)
-c(which(table(all_mean_df2_tr$node)==1))
-unlist(which(table(all_mean_df2_tr$node)==1))
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F]<-1#
-bshape[is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F]<-2
-bshape
-match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2))
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F)]<-1#
-bshape[which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F)]<-2#
-bshape[which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F)]<-3
-bshape
-which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F)
-which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F)
-table(all_mean_df2_tr$node)
-which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F)
-is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-bshape[(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F)]<-1
-bshape
-all_mean_df2_tr
-head(all_mean_df2_tr)
-table(mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
-)
-table(all_mean_df_tr)
-table(all_mean_df2_tr$node)
-names(table(all_mean_df2_tr$node))
-names(table(all_mean_df2_tr$node))[1]
-as.numeric(names(table(all_mean_df2_tr$node))[1])
-as.numeric(names(table(all_mean_df2_tr$node))[240])
-nshows=table(all_mean_df2_tr$node)
-length(nshows)
-bshape=rep(NA,nrow(all_mean_df2_tr))
-title(nshows)
-title(nshopws)
-names(nshows)
-nn=249
-nn=229
-ntmp=all_mean_df2_tr$node[nn]
-ntmp
-nshows[names(nshows)==as.character(ntmp)]
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-nshows=table(all_mean_df2_tr$node)#
-for(nn in 1:length(bshape)){#
-	ntmp=all_mean_df2_tr$node[nn]#
-	bshape[nn]<-nshows[names(nshows)==as.character(ntmp)]#
-}
-bshape
-###truncate to only plot nodes with >40pct post prob of being in block#
-all_mean_df2_tr=all_mean_df2[all_mean_df2$prob>0.4,]#
-all_edge_df_tr <- NULL#
-for(k in 1:K) {#
-  nodes_in <- unique(all_mean_df2_tr$node[all_mean_df2_tr$Block == k])#
-  edges <- which(network[nodes_in,nodes_in]==1, arr.ind=TRUE)#
-  samples_df <- subset(Z, block==k & !is.na(Z1) & node %in% nodes_in)#
-#edge_df_tr <- data.frame(x=all_mean_df2_tr$Z1[edges[,1]], xend=all_mean_df2_tr$Z1[edges[,2]], y=all_mean_df2_tr$Z2[edges[,1]], yend=all_mean_df2_tr$Z2[edges[,2]], prob=(all_mean_df2_tr$prob[edges[,1]]+all_mean_df2_tr$prob[edges[,2]])/2)#
-	mean_df <- ddply(samples_df, .(node), function(subdf) data.frame(Z1=mean(subdf$Z1), Z2=mean(subdf$Z2), prob=nrow(subdf)/nsamp))#
- edge_df_tr <- data.frame(x=mean_df$Z1[edges[,1]], xend=mean_df$Z1[edges[,2]], y=mean_df$Z2[edges[,1]], yend=mean_df$Z2[edges[,2]], prob=(mean_df$prob[edges[,1]]+mean_df$prob[edges[,2]])/2,send=edges[,1],rec=edges[,2])#
-  if(nrow(edges) != 0) edge_df_tr$Block <- k#
-  all_edge_df_tr <- rbind(all_edge_df_tr, edge_df_tr)#
-}#
-#
-#set up indicators of how many blocks a person is in#
-bshape=rep(NA,nrow(all_mean_df2_tr))#
-nshows=table(all_mean_df2_tr$node)#
-for(nn in 1:length(bshape)){#
-	ntmp=all_mean_df2_tr$node[nn]#
-	bshape[nn]<-nshows[names(nshows)==as.character(ntmp)]#
-}#
-#bshape[(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==1)))==F)]<-1#
-#bshape[which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)==2)))==F)]<-2#
-#bshape[which(is.na(match(all_mean_df2_tr$node,which(table(all_mean_df2_tr$node)>2)))==F)]<-3#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
-summary(all_mean_df2_tr$prob)
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
-  abline(h=0)+#
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.title=c("First latent dimension","Second latent dimension"), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-?axis.title
-?theme
-?element_text
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  labs(x="First latent dimension",y="Second latent dimension")#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(),
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(),panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank()panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  theme(axis.text=element_blank(),panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-  #theme(axis.text=element_blank(),panel.grid=element_blank(), strip.background=element_blank()))#
-theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-geom_text
-?geom_text
-bplot=c(1:6)#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  geom_text(aes(bplot))#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-g
-bplot=c(1:6)#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  geom_text(aes(bplot))+#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr,aes(label=bplot)) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-bplot
-(g<-ggplot(all_mean_df2_tr,aes(label="test")) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-bplot=c(1:6)#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_text(aes(1,1,label=bplot))+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-?geom_text
-bplot=c(1:6)#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_text(aes(label = paste(bplot, "^(", bplot, ")", sep = "")), parse = TRUE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-bplot=c(1:6)#
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_text(aes(x=bplot,y=bplot,label = paste(bplot, "^(", bplot, ")", sep = "")), parse = TRUE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-?theme_bw()
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  ggtitle("test")+#
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free',labeller=label_both) +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free',labeller = label_parsed) +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))
-(g<-ggplot(all_mean_df2_tr) + #
-  geom_segment(data=all_edge_df_tr, aes(x=x, xend=xend, y=y, yend=yend, alpha=prob/2)) +#
-  guides(alpha=FALSE)+#
-  geom_point(aes(Z1, Z2, alpha=prob,color=as.factor(castesubcaste),pch=as.factor(bshape),cex=1.1)) +#
-  guides(cex=FALSE)+ #
-  #geom_text(aes(label=node, x=Z1, y=Z2, size=prob)) + #
-  theme_bw() +#
-  facet_wrap(~Block, nrow=2, scales='free') +#
-  #labs(x="First latent dimension",y="Second latent dimension")+#
-  coord_fixed(ratio=1) + #
- scale_color_manual(name="HH Caste", values=c(1:6), labels=c("General", "Minority", "OBC", "Schedule caste", "Schedule tribe", "Unknown")) +#
- scale_shape_manual(name="Block inclusion", values=c(16,17,15), labels=c("Single block", "Two Blocks", "Multiple Blocks"))+#
-theme(axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-#theme(axis.text=element_blank(), axis.ticks=element_blank(), axis.title=element_blank(), panel.grid=element_blank(), strip.background=element_blank()))#
-ggsave(paste(prefix,'latent_positions_shaded.png',sep=''), g, width=4.5, height=2.5, units='in', scale=1.5)
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank()))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solit", "dashed")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solit", "dashed"),label=c("a","b")))
+hpd_blocks
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group),linetype=cond) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solit", "dashed"),label=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solid", "dashed"),label=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solid", "dashed"),labels=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(values=c("solid", "dashed"),labels=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(name="linetype",values=c("solid", "dashed"),labels=c("a","b"))+#
+   scale_shape_manual(values=c(1,3),labels=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  #scale_linetype_manual(name="linetype",values=c("solid", "dashed"),labels=c("a","b"))+#
+   scale_shape_manual(values=c(1,3),labels=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+  scale_linetype_manual(name="linetype",values=c(1,2),labels=c("a","b"))+#
+   scale_shape_manual(values=c(1,3),labels=c("a","b")))
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank())+#
+ guides(colour=guide_legend(override.aes=list(linetype=c(2,rep(1,times=9))))) )
+(g <- ggplot(hpd_blocks) +#
+  geom_path(aes(x=x, y=y, group=group)) +#
+  geom_point(data=mean_block_params, aes(beta, logsigma)) +#
+  xlab(expression(beta)) +#
+  ylab(expression(log(sigma))) +#
+  facet_wrap(~Block, nrow=2) +#
+  geom_path(data=hpd, aes(x,y), linetype=2) +#
+  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +#
+  theme_bw() +#
+  theme(strip.background=element_blank()))
