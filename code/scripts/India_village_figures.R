@@ -273,7 +273,7 @@ mean_block_params <- ddply(block_params, .(Block), summarise, beta=mean(beta), l
   ylab(expression(log(sigma))) +
   facet_wrap(~Block, nrow=2) +
   geom_path(data=hpd, aes(x,y), linetype=2) +
-  geom_point(x=mean(mcmc_samples$beta), y=mean(log(mcmc_samples$sigma)), shape=2) +
+  geom_point(x=mean(mcmc_samples$mu[,1]), y=mean((mcmc_samples$mu[,2])), shape=2) +
   theme_bw() +
   theme(strip.background=element_blank()))
 
