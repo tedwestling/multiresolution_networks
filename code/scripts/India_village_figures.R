@@ -334,3 +334,16 @@ mean(log(mcmc_samples$sigma[,4]) > mcmc_samples$mu[,2])
 mean(log(mcmc_samples$sigma[,5]) > mcmc_samples$mu[,2])
 if(Khat==6){mean(log(mcmc_samples$sigma[,6]) > mcmc_samples$mu[,2])}
 
+##calculations for the between block and intercepts matrix
+#intercepts for each block
+round(apply(beta_array,3,quantile,probs=.975),3)
+round(apply(beta_array,3,mean),3)
+
+#between block probabilities
+#B_array
+Bmeans=round(apply(B_array,3,mean),3)
+Bsd=round(apply(B_array,3,sd),3)
+round(apply(B_array,3,quantile,probs=.975),3)
+round(apply(B_array,3,quantile,probs=.025),3)
+
+
