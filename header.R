@@ -12,6 +12,8 @@ source('code/functions/latent_space_vb.R')
 source('code/functions/spectral_clustering.R')
 source('code/functions/three_stage_estimation.R')
 source('code/functions/mcmc_sampler.R')
+source('code/functions/sbm_mcmc.R')
+
 
 ###############################################################################
 # Function: ensure_package
@@ -30,7 +32,7 @@ ensure_package <- function(package_name) {
   }
 }
 
-ensure_package(c('igraph', 'foreign', 'ggplot2', 'plyr', 'MASS', 'mgcv', 'reshape', 'boot', 'grid', 'sna', 'gridExtra', 'mixer', 'VBLPCM', 'rARPACK', 'EMCluster', 'gtools', 'MCMCpack', 'ellipse', 'clue', 'network', 'latentnet', 'smacof', 'abind', 'emdbook', 'coda'))
-
+ensure_package(c('igraph', 'foreign', 'ggplot2', 'plyr', 'MASS', 'mgcv', 'reshape', 'boot', 'grid', 'sna', 'gridExtra', 'mixer', 'VBLPCM', 'EMCluster', 'gtools', 'MCMCpack', 'ellipse', 'clue', 'network', 'latentnet', 'smacof', 'abind', 'emdbook', 'coda', 'msm'))
+#'rARPACK', 
 logit <- function(x) log(x/(1-x))
 expit <- inv.logit <- logit.inv <- function(x) 1/ (1 + exp(-x))
