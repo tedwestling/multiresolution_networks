@@ -25,7 +25,7 @@
 #############################################################
 
 spectral_cluster <- function(Y, Krange=(2:floor(nrow(Y)/10)), tau=mean(colSums(Y)), normalize=TRUE, threshold=TRUE, gamma=ifelse(threshold, 1,0), plot=FALSE, nstart=5, niter=5, verbose=FALSE, degree_correct=FALSE, assortative=TRUE) {
-  require(rARPACK)
+  #require(rARPACK)
   
   miss_inds <- which(is.na(Y), arr.ind = TRUE)
   miss_inds <- miss_inds[miss_inds[,1] < miss_inds[,2],]
@@ -44,7 +44,7 @@ spectral_cluster <- function(Y, Krange=(2:floor(nrow(Y)/10)), tau=mean(colSums(Y
     dtau_sqrtinv <- 1/sqrt(colSums(Y) + tau)
     #Dtau_sqrtinv <- diag()
     L <- outer(dtau_sqrtinv, dtau_sqrtinv) * Y #Dtau_sqrtinv %*% Y %*% Dtau_sqrtinv
-    eig <- eigs(L, k = max(Krange), which='LR')
+    eig <- eigen(L)#, k = max(Krange), which='LR')
     ordered_eigvals <- order(eig$values, decreasing=TRUE)
     vectors <- eig$vectors[,ordered_eigvals]
   } else {

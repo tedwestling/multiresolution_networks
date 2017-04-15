@@ -29,7 +29,7 @@ block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, 
   # Yimp <- Y
   # if(sum(is.na(Y)) > 0) Yimp[is.na(Yimp)] <- exp_prob[is.na(Yimp)]
   
-
+  
   # if no starting values are provided, initialize using the three-stage procedure
   # par_t will contain the latest parameter values, which will be used for proposal distributions
   if(verbose) cat("Initalizing...")
@@ -47,7 +47,7 @@ block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, 
   for(i in 1:par_t$K) for(j in 1:i) par_t$s[i,j] <- par_t$s[j,i] <- sum(par_t$Y[par_t$gamma == i, par_t$gamma == j])
   par_t$pi <- par_t$block_n/N
   K <- par_t$K
-  dens <- sum(Y, na.rm=TRUE)/(N^2 - N)
+  dens <- mean(Y, na.rm=TRUE)
   if(is.null(a0)) a0 <- 10 * dens
   if(is.null(b0)) b0 <- 10 * (1-dens)
   
@@ -63,7 +63,7 @@ block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, 
   
   minval <- par_t$mu[1] - cD * exp(par_t$mu[2])
   if(digamma(a0) - digamma(b0) > minval) par_t$mu[1] <- 1 + digamma(a0) - digamma(b0) + cD * exp(par_t$mu[2])
-    
+  
   # Create list to store our samples in
   if(nrow(miss_inds) > 0) Ymiss <- matrix(NA, nrow=n_samples, ncol=nrow(miss_inds))
   beta <- matrix(NA, nrow=n_samples, ncol=K)
@@ -97,16 +97,21 @@ block_latent_MCMC <- function(Y, D, K, burn_in, n_samples, thin, v, epsilon=.1, 
     # Sample missing values from current parameter estimates first because we need Y with no missing values for the other updates
     if(nrow(miss_inds) > 0) {
       if(debug_output) cat("Missing edge updates\n")
-      par_t$Y[miss_inds] <- par_t$Y[miss_inds[,c(2,1)]] <- Ymiss[t,] <- missing_edge_update(par_t, miss_inds)
+      newedge <- missing_edge_update(par_t, miss_inds)
+      par_t$Y[miss_inds] <- par_t$Y[miss_inds[,c(2,1)]] <- newedge
+      if(keeping_sample)  Ymiss[sample_num,] <- newedge
       for(i in 1:par_t$K) for(j in 1:i) par_t$s[i,j] <- par_t$s[j,i] <- sum(par_t$Y[par_t$gamma == i, par_t$gamma == j])
     }
     
     if(t %% v == 0) {
-      #if(verbose) cat("  Performing joint proposal.\n")
+      if(debug_output) cat("  Performing joint proposal.\n")
       for(i in 1:N) {
         joint_prop <- joint_proposal(i, epsilon, rZ, par_t)
         if(keeping_sample & record_acc_probs) joint_acc_probs[sample_num, i] <- joint_prop$prob
         #if(verbose) cat("    Proposal acceptance probability", joint_prop$prob, "\n")
+        if(is.na(joint_prop$prob)) {
+          print("PROBLEM")
+        }
         if(runif(1)  < joint_prop$prob) {
           prev_block <- par_t$gamma[i]
           new_block <- joint_prop$gamma_i
@@ -325,6 +330,9 @@ joint_proposal <- function(i, epsilon, rZ, par_t) {
   
   log_acc_prob <- log_acc_prob + sum(dnorm(Zi_t, mi_rev, rZ, log=TRUE)) - sum(dnorm(Zistar, mi, rZ, log=TRUE))
   
+  if(is.na(exp(log_acc_prob))) {
+    print("Problem")
+  }
   return(list(gamma_i=gammai_star,
               Zi=Zistar,
               prob=as.numeric(exp(log_acc_prob))))
@@ -375,11 +383,14 @@ B_update <- function(par_t, a0, b0) {
   for(k in 2:K) {
     for(l in 1:(k-1)) {
       #while(TRUE) {
-        prop <- rbeta(1, a0 + par_t$s[k, l], b0 + par_t$block_n[k] * par_t$block_n[l] - par_t$s[k, l])
-        #if(prop < min(exp_value(par_t$theta[k,1], exp(par_t$theta[k,2])), exp_value(par_t$theta[l,1],  exp(par_t$theta[l,2])))) break
+      prop <- rbeta(1, a0 + par_t$s[k, l], b0 + par_t$block_n[k] * par_t$block_n[l] - par_t$s[k, l])
+      #if(prop < min(exp_value(par_t$theta[k,1], exp(par_t$theta[k,2])), exp_value(par_t$theta[l,1],  exp(par_t$theta[l,2])))) break
       #}
       newB[k, l] <- newB[l, k] <- prop
     }
+  }
+  if(any(is.na(newB[lower.tri(newB, diag=FALSE)]))) {
+    print("problem")
   }
   return(newB)
 }
@@ -397,14 +408,14 @@ theta_proposal <- function(k, Atheta, par_t) {
   sigmak_t <- par_t$sigma[k]
   thetak_t <- c(betak_t, log(sigmak_t))
   #while(TRUE) {
-    thetak_star <- mvrnorm(1, thetak_t, Atheta)
-    betak_star <- thetak_star[1]
-    sigmak_star <- exp(thetak_star[2])
-    
-    # Check that proposal satisfies constraints
+  thetak_star <- mvrnorm(1, thetak_t, Atheta)
+  betak_star <- thetak_star[1]
+  sigmak_star <- exp(thetak_star[2])
+  
+  # Check that proposal satisfies constraints
   #  if(sum(par_t$B[k, -k] >= exp_value(betak_star, sigmak_star)) == 0) break
   #}
-
+  
   # part of acceptance prob regarding theta
   log_acc_prob <- -(1/2) * t(thetak_star - par_t$mu) %*% solve(par_t$Sigma) %*% (thetak_star - par_t$mu) + (1/2) * t(thetak_t - par_t$mu) %*% solve(par_t$Sigma) %*% (thetak_t - par_t$mu)
   
@@ -424,30 +435,30 @@ theta_proposal <- function(k, Atheta, par_t) {
 }
 
 mu_update <- function(par_t,  m0, s0, a0, b0) {
-	require(msm)
-#new strategy is to update the two mu's marginally so we enforce the constraint one one dimension at a time
-	#sample size 
+  require(msm)
+  #new strategy is to update the two mu's marginally so we enforce the constraint one one dimension at a time
+  #sample size 
   N <- par_t$N
-  	#number of blocks
+  #number of blocks
   K <- par_t$K
-  	#Joint update would be a sample from a MVN with mean m and sd matrix co
-  	#m is vector of length 2 co is 2 by 2 matrix
+  #Joint update would be a sample from a MVN with mean m and sd matrix co
+  #m is vector of length 2 co is 2 by 2 matrix
   m <- (colSums(par_t$theta) + s0 * m0) / (K + s0)
   co <- par_t$Sigma / (K + s0)
   #print(co)
-#dimension of latent space
+  #dimension of latent space
   D <- ncol(par_t$Z)
-#constant in front of constraint
+  #constant in front of constraint
   cD <- 2 * gamma((D + 1)/2) / gamma(D/2)
   mu_star<-c(NA,NA)
   #####print everything before the update
- # print("printing inputs")
- # print("m")
- # print(m)
- # print("co")
- # print(co)
- # print("cD")
- # print(cD)
+  #print("printing inputs")
+  # print("m")
+  # print(m)
+  # print("co")
+  # print(co)
+  # print("cD")
+  # print(cD)
   #############
   #note that the OLD value of mu2 goes into the constraint, not the current average of thetas that goes into the gibbs update 
   constraintmu1=digamma(a0) - digamma(b0)+(cD * exp(par_t$mu[2]))
@@ -470,7 +481,7 @@ mu_update <- function(par_t,  m0, s0, a0, b0) {
   constraintmu2=log((digamma(a0)-digamma(b0)-mu_star[1])/(-cD))
   mu2mean=m[2]+((sqrt(co[2,2])/sqrt(co[1,1]))*rho*(mu_star[1]-m[1]))
   mu2sd=sqrt((1-rho^2)*co[2,2])
-    ######
+  ######
   #print("mu2 constraint")
   #print(constraintmu2)
   #print("mean of mu2")
@@ -479,8 +490,8 @@ mu_update <- function(par_t,  m0, s0, a0, b0) {
   #print(mu2sd)
   ######
   mu_star[2]<-rtnorm(1,upper=constraintmu2,mean=mu2mean,sd=mu2sd)
- #print("mu_star")
- #	print(mu_star)
+  #print("mu_star")
+  #	print(mu_star)
   return(mu_star)
 }
 
@@ -630,5 +641,3 @@ exp_value <- function(beta, sigma) {
     print(c(beta, sigma))
   } else return(int)
 }
-
-
